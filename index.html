@@ -1,0 +1,152 @@
+<html>
+<head>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <link rel="stylesheet" type="text/css"
+        href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.js"></script>
+  <script src="https://unpkg.com/jquery-tablesort@0.0.11/jquery.tablesort.min.js"></script>
+</head>
+<body>
+
+<div class="ui container">
+  <h2 class="ui header" style="padding: 2em 0em 0em 0em ;">
+    <i class="binoculars icon"></i>
+    <div class="content">
+      BCTracer
+      <div class="sub header">Class Tracer featured by BPF</div>
+    </div>
+  </h2>
+
+  <div class="ui small basic icon buttons">
+    <button class="ui button"><i class="file icon"></i></button>
+    <button class="ui button"><i class="save icon"></i></button>
+    <button class="ui button"><i class="upload icon"></i></button>
+    <button class="ui button"><i class="download icon"></i></button>
+  </div>
+
+
+  <p></p>
+
+
+  <div class="ui six column center aligned stackable divided grid segment">
+    <div class="column">
+      <div class="ui test slider checkbox">
+        <input type="checkbox">
+        <label>1</label>
+      </div>
+    </div>
+    <div class="column">
+      <div class="ui test toggle checkbox">
+        <input type="checkbox" checked="checked">
+        <label>2</label>
+      </div>
+    </div>
+    <div class="column">
+      <div class="ui test checkbox">
+        <input type="checkbox">
+        <label>3</label>
+      </div>
+    </div>
+    <div class="column">
+      <div class="ui test slider checkbox">
+        <input type="checkbox" checked="checked">
+        <label>4</label>
+      </div>
+    </div>
+    <div class="column">
+      <div class="ui test toggle checkbox">
+        <input type="checkbox">
+        <label>5</label>
+      </div>
+    </div>
+    <div class="column">
+      <div class="ui test checkbox">
+        <input type="checkbox">
+        <label>6</label>
+      </div>
+    </div>
+  </div>
+
+
+  <p></p>
+
+
+  <table class="ui sortable very compact table" id="graph">
+    <thead>
+    <tr>
+      <th>Name</th>
+      <th>Status</th>
+      <th>Another Status</th>
+      <th>Notes</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td>John</td>
+      <td>Approved</td>
+      <td>Approved</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <td>Jamie</td>
+      <td>Approved</td>
+      <td>Approved</td>
+      <td>Requires call</td>
+    </tr>
+    <tr class="negative">
+      <td>John</td>
+      <td>Approved</td>
+      <td>Approved</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <td>Jamie</td>
+      <td>Approved</td>
+      <td>Approved</td>
+      <td>Requires call</td>
+    </tr>
+    <tr>
+      <td>John</td>
+      <td>Approved</td>
+      <td>Approved</td>
+      <td>None</td>
+    </tr>
+    <tr class="positive">
+      <td>Jamie</td>
+      <td>Approved</td>
+      <td>Approved</td>
+      <td>Requires call</td>
+    </tr>
+    <tr>
+      <td>John</td>
+      <td>Approved</td>
+      <td>Approved</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <td>Jamie</td>
+      <td>Approved</td>
+      <td>Approved</td>
+      <td>Requires call</td>
+    </tr>
+    </tbody>
+  </table>
+
+</div>
+
+</body>
+<footer></footer>
+
+
+<script>
+  $(document).ready(function () {
+
+
+    $('#graph').tablesort();
+    console.log("ready!");
+
+
+  });
+</script>
+</html>
+
