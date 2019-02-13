@@ -44,37 +44,83 @@ CPU:4 [LOST 51128 EVENTS]
 26428.375918 |   4)   0.042 us    |                  rcu_all_qs();
 26428.375919 |   4)   0.615 us    |                }`;
 
+const classTPL = (_classRows) => `
+<table class="ui very compact table">
+   <thead>
+      <tr>
+         <th>Attr</th>
+         <th>Value</th>
+      </tr>
+   </thead>
+   <tbody>${_classRows}</tbody>
+</table>
+`;
 
-const sampleTable = `
-  <table class="ui very compact table">
-  <thead>
-    <tr><th>Attr</th>
-    <th>Value</th>
-  </tr></thead>
-  <tbody>
-    <tr>
-      <td>IO</td>
-      <td>3</td>
-    </tr>
-    <tr>
-      <td>Wait</td>
-      <td>4</td>
-    </tr>
-    <tr>
-      <td>ADDR</td>
-      <td>0x812AF2</td>
-    </tr>
-    <tr>
-      <td>John</td>
-      <td>123</td>
-    </tr>
-    <tr>
-      <td>WAK</td>
-      <td>Approved</td>
-    </tr>
-    <tr>
-      <td>John</td>
-      <td>Approved</td>
-    </tr>
-  </tbody>
-</table>`;
+const classRowTPL = (k, v, diff) => `
+<tr>
+   <td class=${diff ? 'negative' : ''}>${k}</td>
+   <td class=${diff ? 'negative' : ''}>${v}</td>
+</tr>
+`;
+const diffData = (prev, curr) => {
+  if (!_.isNull(prev) && !_.isEqual(_.keys(prev).sort(), _.keys(curr).sort())) {
+    alert("ERR: Not same Data");
+    return
+  }
+
+  let classRows = '';
+  _.keys(curr).forEach(k => {
+    let val = '', diff = false;
+    if (!_.isNull(prev) && !_.isEqual(prev[k], curr[k])) {
+      val = `${prev[k]} -> `
+      diff = true;
+    }
+    val += `${curr[k]}`;
+    classRows += classRowTPL(k, val, diff)
+  });
+
+  return classTPL(classRows)
+};
+
+
+const sampleData = {
+  "26428.375252": {
+    'magic': '1',
+    'sequence': '1',
+    'time': '2',
+    'sector': '3',
+    'bytes': '4',
+    'action': '5',
+    'pid': '6',
+    'device': '7',
+    'cpu': '7',
+    'error': '0',
+    'pdu_len': '8'
+  },
+  "26428.375257": {
+    'magic': '2',
+    'sequence': '1',
+    'time': '21',
+    'sector': '3',
+    'bytes': '44',
+    'action': '5',
+    'pid': '6',
+    'device': '7',
+    'cpu': '7',
+    'error': '0',
+    'pdu_len': '8'
+  },
+  "26428.375260": {
+    'magic': '13',
+    'sequence': '1',
+    'time': '29',
+    'sector': '3',
+    'bytes': '49',
+    'action': '5',
+    'pid': '6',
+    'device': '7',
+    'cpu': '7',
+    'error': '0',
+    'pdu_len': '8'
+  },
+};

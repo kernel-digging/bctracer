@@ -37,7 +37,7 @@
 <script>
   // F-<tag> stands for filter, TPL stands for template
   let debug = true;
-  let debug = false;
+  // let debug = false;
   let timestamps = [];
 
   function renderCallgraph(trace) {
@@ -68,16 +68,11 @@
     $('.ui.checkbox').checkbox({
       onChange: function () {
         let cpu = this.getAttribute('data-cpu');
-        console.log(cpu)
         $(`[f-cpu='${cpu}']`).toggle()
       }
     });
 
-    timestamps.forEach(_ts => $(`[f-ts='${_ts}']`).popup({
-        position: 'top center',
-        html: sampleTable
-      })
-    );
+
   }
 
   $(document).ready(function () {
@@ -87,6 +82,21 @@
 
     $('#graph').tablesort();
     console.log("Data sort Done");
+
+
+    let data = _.keys(sampleData);
+    data.forEach((val, idx) => {
+      let prev = (idx === 0) ? null :  sampleData[data[idx-1]];
+      let curr = sampleData[data[idx]];
+
+      $(`[f-ts='${val}']`).addClass('negative');
+      $(`[f-ts='${val}']`).popup({
+          position: 'top center',
+          html: diffData(prev,curr)
+        });
+      debugger
+    });
+
   });
 </script>
 <script src="template.js"></script>
