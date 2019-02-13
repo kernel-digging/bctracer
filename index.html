@@ -17,7 +17,14 @@
     </div>
   </h2>
 
-  <div class="ui no-mar no-pad-top right floated filter basic segment" id="filterHolder"></div>
+  <div class="ui no-mar no-pad right floated class filter basic segment">
+    <div class="ui checkbox">
+      <input type="checkbox" data-type='class'>
+      <label>Class Only</label>
+    </div>
+  </div>
+  <div class="ui no-mar no-pad right floated cpu filter basic segment"></div>
+
   <table class="ui sortable very compact table" id="graph">
     <thead>
     <tr>
@@ -27,9 +34,8 @@
       <th class="no-sort ten wide">Function</th>
     </tr>
     </thead>
-    <tbody id="graphHolder"></tbody>
+    <tbody id="graphBox"></tbody>
   </table>
-
 
 
 </div>
@@ -37,8 +43,7 @@
 <script>
   // F-<tag> stands for filter, TPL stands for template
   let debug = true;
-  // let debug = false;
-  let timestamps = [];
+  let traceData = {};
 
   function renderCallgraph(trace) {
     // Delimits '|' and '\d)'
@@ -51,54 +56,72 @@
 
     callGraph.forEach((line) => {
       let row = line.split(del);
+      let name = _.last(row);
       let [ts, cpu = 'X', delta] = _.initial(row).map(_trim);
-      // String literal $ not working due to conflict with jquery
-      graph += callTPL(ts, cpu, delta, _.last(row));
-      timestamps.push(ts);
+
+      if (name.includes('=>')) {
+        ts = undefined;
+      }
+      if (!_.isEmpty(ts) && !name.includes('}')) {
+        traceData[ts] = name.trim();
+      }
+      graph += callTPL(ts, cpu, delta, name);
       cpus.add(cpu);
     });
 
 
-    $('#graphHolder').html(graph);
+    $('#graphBox').html(graph);
     Array.from(cpus).sort().forEach(cpu => filter += filterTPL(cpu));
-    $('#filterHolder').html(filter);
+    $('.cpu.filter').html(filter);
 
 
     // TODO: Move logic after rendered
     $('.ui.checkbox').checkbox({
       onChange: function () {
-        let cpu = this.getAttribute('data-cpu');
-        $(`[f-cpu='${cpu}']`).toggle()
+        let type = this.getAttribute('data-type'), sel='';
+
+        if (type === 'cpu')
+          sel = `[f-cpu='${this.getAttribute('cpu')}']`;
+        else if (type === 'class')
+          sel = `#graphBox tr:not(.negative)`;
+
+        if(this.checked) $(sel).show();
+        else             $(sel).hide();
       }
     });
-
-
   }
 
   $(document).ready(function () {
-    if(debug) {
+    if (debug) {
       renderCallgraph(sample);
     }
 
     $('#graph').tablesort();
     console.log("Data sort Done");
 
+    sampleData.forEach((val, idx) => {
+      let prev = (idx === 0) ? null : sampleData[idx - 1]['values'];
+      let curr = sampleData[idx]['values'];
+      let curr_name = sampleData[idx]['function_name'];
+      let curr_ts = sampleData[idx]['timestamp'];
+      let next_ts = (idx + 1 === sampleData.length) ? 99999999999999 : sampleData[idx + 1]['timestamp'];
 
-    let data = _.keys(sampleData);
-    data.forEach((val, idx) => {
-      let prev = (idx === 0) ? null :  sampleData[data[idx-1]];
-      let curr = sampleData[data[idx]];
+      let avail_ts = _.keys(traceData).filter(t => _.inRange(t, curr_ts, next_ts));
+      let final_ts = avail_ts.filter(t => traceData[t].startsWith(curr_name));
 
-      $(`[f-ts='${val}']`).addClass('negative');
-      $(`[f-ts='${val}']`).popup({
-          position: 'top center',
-          html: diffData(prev,curr)
-        });
-      debugger
+      if (!_.isEmpty(final_ts)) {
+        $(`[f-ts='${final_ts[0]}']`)
+          .addClass('negative')
+          .popup({
+            position: 'top center',
+            html: diffData(prev, curr)
+          });
+      }
     });
-
   });
 </script>
 <script src="template.js"></script>
+<script src="trace.js"></script>
+<script src="data.js"></script>
 </html>
 
