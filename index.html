@@ -43,32 +43,33 @@
 <script>
   // F-<tag> stands for filter, TPL stands for template
   let debug = true;
-  let traceData = {};
+  let traces = {};
 
-  function renderCallgraph(trace) {
+  function renderGraph(logs) {
     // Delimits '|' and '\d)'
     const del = new RegExp('(?<=\\d)\\)|\\|', "g");
     const _trim = x => typeof x === 'string' ? x.trim() : '';
 
-    let callGraph = trace.split('\n');
+    let log = logs.split('\n');
     let graph = '', filter = '<span> Filter CPU: </span>';
     let cpus = new Set();
 
-    callGraph.forEach((line) => {
-      let row = line.split(del);
-      let name = _.last(row);
-      let [ts, cpu = 'X', delta] = _.initial(row).map(_trim);
+    log.forEach((line) => {
+      if (line[0] !== '#') {
+        let row = line.split(del);
+        let name = _.last(row);
+        let [ts, cpu = 'X', delta] = _.initial(row).map(_trim);
 
-      if (name.includes('=>')) {
-        ts = undefined;
+        if (name.includes('=>')) {
+          ts = undefined;
+        }
+        if (!_.isEmpty(ts) && !name.includes('}')) {
+          traces[ts] = name.trim();
+        }
+        graph += callTPL(ts, cpu, delta, name);
+        cpus.add(cpu);
       }
-      if (!_.isEmpty(ts) && !name.includes('}')) {
-        traceData[ts] = name.trim();
-      }
-      graph += callTPL(ts, cpu, delta, name);
-      cpus.add(cpu);
     });
-
 
     $('#graphBox').html(graph);
     Array.from(cpus).sort().forEach(cpu => filter += filterTPL(cpu));
@@ -78,39 +79,51 @@
     // TODO: Move logic after rendered
     $('.ui.checkbox').checkbox({
       onChange: function () {
-        let type = this.getAttribute('data-type'), sel='';
+        let type = this.getAttribute('data-type'), sel = '';
 
-        if (type === 'cpu')
+        if (type === 'cpu') {
           sel = `[f-cpu='${this.getAttribute('cpu')}']`;
-        else if (type === 'class')
-          sel = `#graphBox tr:not(.negative)`;
+          if (this.checked)
+            $(sel).show();
 
-        if(this.checked) $(sel).show();
-        else             $(sel).hide();
+          else
+            $(sel).hide();
+        } else if (type === 'class') {
+          sel = `#graphBox tr:not(.negative)`;
+          if (this.checked)
+            $(sel).hide();
+
+          else
+            $(sel).show();
+        }
       }
     });
   }
 
   $(document).ready(function () {
     if (debug) {
-      renderCallgraph(sample);
+      renderGraph(traceLog);
     }
 
     $('#graph').tablesort();
     console.log("Data sort Done");
 
-    sampleData.forEach((val, idx) => {
-      let prev = (idx === 0) ? null : sampleData[idx - 1]['values'];
-      let curr = sampleData[idx]['values'];
-      let curr_name = sampleData[idx]['function_name'];
-      let curr_ts = sampleData[idx]['timestamp'];
-      let next_ts = (idx + 1 === sampleData.length) ? 99999999999999 : sampleData[idx + 1]['timestamp'];
+    let trace_ts = _.keys(traces);
+    _.keys(classLog).sort().forEach((c, i, k) => {
+      let [p, n] = [k[i - 1], k[i + 1]];
+      let prev = (p) ? classLog[p] : null;
 
-      let avail_ts = _.keys(traceData).filter(t => _.inRange(t, curr_ts, next_ts));
-      let final_ts = avail_ts.filter(t => traceData[t].startsWith(curr_name));
+      let curr = classLog[c];
+      let [ts, name] = c.split('/');
+      let next_ts = (n) ? n.split('/')[0] : 99999999999999;
 
-      if (!_.isEmpty(final_ts)) {
-        $(`[f-ts='${final_ts[0]}']`)
+      let avail_ts = trace_ts.filter(_t =>
+        _.inRange(_t, ts, next_ts) && traces[_t].startsWith(name)
+      );
+
+      if (!_.isEmpty(avail_ts)) {
+        debugger
+        $(`[f-ts='${avail_ts[0]}']`)
           .addClass('negative')
           .popup({
             position: 'top center',
@@ -122,6 +135,6 @@
 </script>
 <script src="template.js"></script>
 <script src="trace.js"></script>
-<script src="data.js"></script>
+<script src="class.js"></script>
 </html>
 
