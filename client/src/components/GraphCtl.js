@@ -1,147 +1,150 @@
-import React from 'react';
-import {initial, size, inRange, isEmpty, last, trim} from 'lodash';
-import {
-  LOG_SPLIT,
-  LOG_IGNORE,
-  TRACE_LOG,
-  TYPE_CPU,
-  TYPE_MISC,
-} from '../constants/AppConstants';
+import React from 'react'
+import { initial, size, inRange, isEmpty, last, trim, includes, pull }
+  from 'lodash'
+import { LOG_SPLIT, LOG_IGNORE, TRACE_LOG, TYPE_CPU, TYPE_MISC }
+  from '../constants/AppConstants'
 
-const traceObj = (ts, cpu, delta, name) => ({
-  ts,
-  cpu,
-  delta,
-  name,
-  data: {},
-  active: false,
-  visible: true,
-});
+const traceObj =
+  (ts, cpu, delta, name) => ({ ts, cpu, delta, name, data: {}, active: false })
 
 class GraphCtl extends React.Component {
-  constructor(props) {
-    super(props);
+  constructor (props) {
+    super(props)
     this.state = {
       traces: {},
       cpus: new Set(),
-      filter: null,
+      filter: {
+        [TYPE_CPU]: null,
+        [TYPE_MISC]: {
+          'data': false,
+          'select': false,
+        },
+        selected: [],
+      },
       render: false,
-    };
+    }
   }
 
-  /* Graph Render */
-  shouldComponentUpdate(nextProps, nextState) { return nextState.render; }
+  // Graph Render
+  shouldComponentUpdate (nextProps, nextState) { return nextState.render }
 
-  toggleRender() {
-    this.setState({render: !this.state.render});
+  toggleRender = () => this.setState({ render: !this.state.render })
+
+  update = (state, doRender = null) => this.setState(state,
+    (doRender ? this.toggleRender : null))
+
+  onSelect (key) {
+    return () => {
+      let traces = { ...this.state.traces }
+      let filter = { ...this.state.filter }
+      traces[key].active = !traces[key].active;
+      (traces[key].active) ? filter.selected.push(key) : pull(filter.selected,
+        key)
+      this.update({ ...traces, ...filter }, true)
+    }
   }
 
-  update(state, doRender = null) {
-    this.setState(state, (doRender ? this.toggleRender : null));
+  // Initialize Context
+  initCtx = (ctx) => this.setState(ctx, this.initFilter)
+
+  initFilter () {
+    let filter = { ...this.state.filter }
+    let cpu = {}
+    Array.from(this.state.cpus).sort().forEach(k => cpu[k] = true)
+    filter[TYPE_CPU] = cpu
+    this.update({ ...{ filter } }, true)
   }
 
-  /* Initialize Context */
-  initCtx(ctx) { this.setState(ctx, this.initFilter); }
-
-  initFilter() {
-    let cpu = {}, show = {'data': false, 'selected': false};
-    Array.from(this.state.cpus).sort().forEach(k => cpu[k] = true);
-    this.update({filter: {[TYPE_CPU]: cpu, [TYPE_MISC]: show}}, true);
+  // Manipulating Filter
+  // e - event, tgt - element
+  doFilter (type) {
+    return (value) => (e, tgt) => {
+      let filter = { ...this.state.filter }
+      filter[type][value] = !filter[type][value]
+      this.update({ ...filter }, true)
+    }
   }
 
-  /* Manipulating Filter */
-  doFilter(type) {
-    const {filter: _filter, traces: _traces} = this.state;
-    let filter = {..._filter}, traces = {..._traces};
+  isVisible (key) {
+    const { filter, traces: { [key]: trace } } = this.state
 
-    return (value) => () => {
-      console.log('Do Filter ', type, value, filter[type][value]);
-      filter[type][value] = !filter[type][value];
-      console.log('Do Filter ', type, value, filter[type][value]);
+    let cpuFilter = filter[TYPE_CPU][trace.cpu]
 
-      Object.entries(_traces).forEach(([_k, _v]) => {
-        if (type.eq(TYPE_CPU) && _v[type].eq(value)) {
-          traces[_k] = {..._v, visible: !_v.visible};
-        }
-        if (type.eq(TYPE_MISC) && isEmpty(_v[type])) {
-          traces[_k] = {..._v, visible: !_v.visible};
-        }
-      });
+    let dataFilter = true
+    if (filter[TYPE_MISC]['data'] && isEmpty(trace.data))
+      dataFilter = false
 
-      this.update({traces: traces, filter: filter}, true);
-    };
-  }
+    let selectFilter = true
+    if (filter[TYPE_MISC]['select'] && !includes(filter['selected'], key))
+      selectFilter = false
 
-  parseTrace(data) {
-    let lines = data.split('\n');
-    let cpus = new Set();
-    let traces = {}, idx = 0;
+    return cpuFilter && dataFilter && selectFilter
+  };
+
+  parseTrace (data) {
+    let lines = data.split('\n')
+    let cpus = new Set()
+    let traces = {}, idx = 0
 
     lines.forEach((line) => {
       if (line[0] !== '#' && size(line)) {
-        const row = line.split(LOG_SPLIT);
-        const name = last(row);
-        let [ts, cpu = 'X', delta] = initial(row).map(trim);
+        const row = line.split(LOG_SPLIT)
+        const name = last(row)
+        let [ts, cpu = 'X', delta] = initial(row).map(trim)
 
-        LOG_IGNORE.forEach(i => (name.includes(i)) ? ts = `_${idx++}` : null);
+        LOG_IGNORE.forEach(i => (name.includes(i)) ? ts = `_${idx++}` : null)
 
-        traces[ts] = traceObj(ts, cpu, delta, name);
-        cpus.add(cpu);
+        traces[ts] = traceObj(ts, cpu, delta, name)
+        cpus.add(cpu)
       }
-    });
+    })
 
-    this.initCtx({traces: traces, cpus: cpus});
+    this.initCtx({ traces: traces, cpus: cpus })
   }
 
-  parseClass(data) {
-    let {traces: _traces} = this.state;
-    let traces = {..._traces};
+  parseClass (data) {
+    let { traces: _traces } = this.state
+    let traces = { ..._traces }
 
-    let trace_ts = Object.keys(_traces);
+    let trace_ts = Object.keys(_traces)
     Object.keys(data).sort().forEach((c, i, k) => {
-      let [p, n] = [k[i - 1], k[i + 1]];
-      let prev = (p) ? data[p] : null;
+      let [p, n] = [k[i - 1], k[i + 1]]
+      let prev = (p) ? data[p] : null
 
-      let curr = data[c];
-      let [ts, name] = c.split('/');
-      let next_ts = (n) ? n.split('/')[0] : 99999999999999;
+      let curr = data[c]
+      let [ts, name] = c.split('/')
+      let next_ts = (n) ? n.split('/')[0] : 99999999999999
 
       let avail_ts = trace_ts.filter(_t =>
         inRange(_t, ts, next_ts) &&
         trim(_traces[_t].name).startsWith(`${name}()`),
-      );
+      )
 
       if (!isEmpty(avail_ts)) {
-        traces[avail_ts[0]].data = {...{prev, curr}};
-        console.log(avail_ts[0], prev, curr);
+        traces[avail_ts[0]].data = { ...{ prev, curr } }
       }
-    });
+    })
 
-    this.update({traces: traces}, true);
+    this.update({ traces: traces }, true)
   }
 
-  // $(`[f-ts='${avail_ts[0]}']`).addClass('negative').popup({
-  //   position: 'top center',
-  //   html: diffData(prev, curr),
-  // });
-
-  // CLASS_LOG
-
-  componentDidMount() {
-    this.parseTrace(TRACE_LOG);
+  componentDidMount () {
+    this.parseTrace(TRACE_LOG)
   }
 
-  componentDidUpdate() {
-    this.toggleRender();
+  componentDidUpdate () {
+    this.toggleRender()
   }
 
-  render() {
+  render () {
     return this.props.children({
       ...this.state,
+      onSelect: this.onSelect.bind(this),
       doFilter: this.doFilter.bind(this),
+      isVisible: this.isVisible.bind(this),
       parseClass: this.parseClass.bind(this),
-    });
+    })
   }
 }
 
-export default GraphCtl;
+export default GraphCtl

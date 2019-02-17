@@ -10,9 +10,9 @@ class TableRow extends React.Component {
   }
 
   render() {
-    let {ts, cpu, delta, name, visible, active, data} = this.props;
-    return (visible) ? (
-      <Row negative={!isEmpty(data)} {...{active}}>
+    let {ts, cpu, delta, name, visible, active, data, action} = this.props;
+    return (visible(ts)) ? (
+      <Row negative={!isEmpty(data)} {...{active}} onClick={action(ts)}>
         <Cell textAlign='center'>{ts}</Cell>
         <Cell textAlign='center'>{cpu}</Cell>
         <Cell textAlign='center'>{delta}</Cell>
@@ -21,7 +21,7 @@ class TableRow extends React.Component {
   }
 }
 
-const TableFrame = ({traces}) => (
+const TableFrame = ({traces, visible, action}) => (
   <Table unstackable celled selectable compact='very'>
     <Header>
       <Row>
@@ -33,7 +33,8 @@ const TableFrame = ({traces}) => (
     </Header>
 
     <Body>
-    {Object.keys(traces).map(k => <TableRow key={k} {...traces[k]}/>)}
+    {Object.keys(traces).
+      map(k => <TableRow key={k} {...traces[k]} {...{visible, action}}/>)}
     </Body>
   </Table>
 );
