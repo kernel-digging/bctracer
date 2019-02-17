@@ -19,8 +19,8 @@ const Filters = ({type, filter, action}) => {
                                      chk={v} {...{action}}/>));
 
   let header =
-    type.eq(TYPE_CPU) ? '|ㅤFilter CPU >ㅤ' :
-      type.eq(TYPE_MISC) ? '|ㅤShow Only >ㅤ' : '';
+    type.eq(TYPE_CPU) ? 'Filter CPU >ㅤ' :
+      type.eq(TYPE_MISC) ? 'Show Only >ㅤ' : '';
 
   return (
     <Segment className="no-mar no-pad" compact basic floated='right'>
