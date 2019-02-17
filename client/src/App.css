@@ -33,7 +33,6 @@
 }
 
 
-
 .page.header {
   padding: 2em 0em 0em 0em;
 }
@@ -67,3 +66,16 @@
   padding-bottom: 0px !important
 }
 
+.main.container {
+  overflow: auto;
+  max-height: 99vh;
+}
+
+.main.container.code-view {
+  max-width: 65vw !important;
+  margin: inherit !important;
+}
+
+.code-view.sidebar {
+  width: 35vw !important;
+}

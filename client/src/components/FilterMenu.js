@@ -10,6 +10,11 @@ const FilterMenu = ({ctx}) => {
                  onClick={() => ctx.parseClass(CLASS_LOG)}>
         Load Class
       </Menu.Item>
+      <Menu.Item name='codeView'
+                 onClick={ctx.toggleCodeView}>
+        Code View
+      </Menu.Item>
+
       <Menu.Menu position='right'>
         <Menu.Item name='filter-misc'>
           <Filter type={TYPE_MISC} filter={ctx.filter.show}

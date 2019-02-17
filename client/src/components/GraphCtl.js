@@ -30,6 +30,7 @@ class GraphCtl extends React.Component {
         selected: [],
       },
       render: false,
+      codeView: false
     };
   }
 
@@ -40,6 +41,8 @@ class GraphCtl extends React.Component {
 
   update = (state, doRender = null) => this.setState(state,
     (doRender ? this.toggleRender : null));
+
+  toggleCodeView = () => this.update({codeView: !this.state.codeView}, true);
 
   onSelect(key) {
     return () => {
@@ -154,6 +157,7 @@ class GraphCtl extends React.Component {
       onSelect: this.onSelect.bind(this),
       doFilter: this.doFilter.bind(this),
       parseClass: this.parseClass.bind(this),
+      toggleCodeView : this.toggleCodeView.bind(this),
     });
   }
 }
