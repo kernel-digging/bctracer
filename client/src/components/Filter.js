@@ -1,5 +1,5 @@
 import React from 'react';
-import {Segment, Table, Icon} from 'semantic-ui-react';
+import {Segment} from 'semantic-ui-react';
 import Checkbox from 'semantic-ui-react/dist/commonjs/modules/Checkbox';
 import {TYPE_CPU, TYPE_MISC} from '../constants/AppConstants';
 

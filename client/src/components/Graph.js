@@ -1,28 +1,42 @@
 import React from 'react';
-import {Table} from 'semantic-ui-react';
-import {isEmpty} from 'lodash';
+import {Popup, Table} from 'semantic-ui-react';
+import {isEmpty, isEqual} from 'lodash';
+import ClassTable from './Class';
 
 const {Header, HeaderCell, Row, Body, Cell} = Table;
 
-class TableRow extends React.Component {
+class GraphRow extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
-    return this.props !== nextProps;
+    const {visible: c_visible, active: c_active, data: c_data} = this.props;
+    const {visible: n_visible, active: n_active, data: n_data} = nextProps;
+
+    let _visible = !isEqual(c_visible, n_visible);
+    let _active = !isEqual(c_active, n_active);
+    let _data = !isEqual(c_data, n_data);
+
+    return _visible || _active || _data;
   }
 
   render() {
     let {ts, cpu, delta, name, visible, active, data, action} = this.props;
-    return (visible(ts)) ? (
+    return (visible) ? (
       <Row negative={!isEmpty(data)} {...{active}} onClick={action(ts)}>
-        <Cell textAlign='center'>{ts}</Cell>
+
+        <Popup trigger={<Cell textAlign='center'>{ts}</Cell>}
+               position='left center' disabled={isEmpty(data)}>
+          <Popup.Content>
+            <ClassTable {...{data, ts}}/>
+          </Popup.Content>
+        </Popup>
         <Cell textAlign='center'>{cpu}</Cell>
         <Cell textAlign='center'>{delta}</Cell>
         <Cell>{name.replace(/\s\s/g, 'ㅤ')}</Cell>
-      </Row>) : '';
+      </Row>) : null;
   }
 }
 
-const TableFrame = ({traces, visible, action}) => (
-  <Table unstackable celled selectable compact='very'>
+const GraphTable = ({traces, action}) => (
+  <Table unstackable selectable celled compact='very'>
     <Header>
       <Row>
         <HeaderCell wide={3} textAlign='center'>Timestamp</HeaderCell>
@@ -34,9 +48,9 @@ const TableFrame = ({traces, visible, action}) => (
 
     <Body>
     {Object.keys(traces).
-      map(k => <TableRow key={k} {...traces[k]} {...{visible, action}}/>)}
+      map(k => <GraphRow key={k} {...traces[k]} {...{action}}/>)}
     </Body>
   </Table>
 );
 
-export default TableFrame;
+export default GraphTable;

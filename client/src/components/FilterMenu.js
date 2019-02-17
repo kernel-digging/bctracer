@@ -1,7 +1,7 @@
 import React from 'react';
-import {Menu, Table, Icon} from 'semantic-ui-react';
-import { CLASS_LOG, TYPE_CPU, TYPE_MISC } from '../constants/AppConstants'
-import Filter from './Filter'
+import {Menu} from 'semantic-ui-react';
+import {CLASS_LOG, TYPE_CPU, TYPE_MISC} from '../constants/AppConstants';
+import Filter from './Filter';
 
 const FilterMenu = ({ctx}) => {
   return (
@@ -13,12 +13,12 @@ const FilterMenu = ({ctx}) => {
       <Menu.Menu position='right'>
         <Menu.Item name='filter-misc'>
           <Filter type={TYPE_MISC} filter={ctx.filter.show}
-                      action={ctx.doFilter(TYPE_MISC)}/>
+                  action={ctx.doFilter(TYPE_MISC)}/>
         </Menu.Item>
 
         <Menu.Item name='filter-cpu'>
           <Filter type={TYPE_CPU} filter={ctx.filter.cpu}
-                      action={ctx.doFilter(TYPE_CPU)}/>
+                  action={ctx.doFilter(TYPE_CPU)}/>
         </Menu.Item>
       </Menu.Menu>
     </Menu>
