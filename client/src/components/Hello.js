@@ -1,7 +1,7 @@
 import React, {Fragment} from 'react';
-import {Button, Dimmer, Loader, Divider, Grid, Header, Icon, Segment, Container}
+import {Button, Dimmer, Loader, Divider, Grid, Header, Icon, Segment}
   from 'semantic-ui-react';
-import {isEmpty} from 'lodash';
+import {Log} from '../constants/AppConstants';
 
 class FileBtn extends React.Component {
   constructor(props) {
@@ -19,15 +19,13 @@ class FileBtn extends React.Component {
 
   setName(filename) {this.setState({name: filename});}
 
-  success(e) {
+  success = (e) => {
     const {files} = e.target;
 
     if (files && files.length > 0) {
       const file = files[0];
 
-      if (file.size > 10 * 1024 * 1024) {
-        window.alert('Upload file less than 10MB');
-      } else {
+      if (file.size <= 10 * 1024 * 1024) {
         const {type, ctx, loading: toggle} = this.props;
         let action, fileReader = new FileReader();
 
@@ -36,14 +34,23 @@ class FileBtn extends React.Component {
         else if (type.eq('Class'))
           action = ctx.parseClass;
 
-        fileReader.onload = () => {
-          action(fileReader.result, false);
-          toggle(type);
+        fileReader.onload = async ({res = true}) => {
+          try {
+            await action(fileReader.result, false);
+          } catch (e) {
+            res = false;
+            if (e instanceof SyntaxError)
+              window.alert('Not supported syntax. Upload JSON file.');
+          }
+          Log.info(`${action.name} result : ${res}`);
+          toggle(res ? type : null);
         };
 
         toggle();
         this.setName(file.name);
         setTimeout(() => fileReader.readAsText(file), 500);
+      } else {
+        window.alert('Upload file less than 10MB');
       }
     }
   };
