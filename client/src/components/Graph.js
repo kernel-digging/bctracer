@@ -2,6 +2,7 @@ import React from 'react';
 import {Popup, Table} from 'semantic-ui-react';
 import {isEmpty, isEqual} from 'lodash';
 import ClassTable from './Class';
+import {Log} from '../constants/AppConstants';
 
 const {Header, HeaderCell, Row, Body, Cell} = Table;
 
@@ -19,6 +20,7 @@ class GraphRow extends React.Component {
 
   render() {
     const {ts, cpu, delta, name, visible, active, data, action} = this.props;
+    Log.debug(`GraphRow ${ts} render ${visible}`);
     return (visible) ? (
       <Row negative={!isEmpty(data)} {...{active}} onClick={action(ts)}>
 
