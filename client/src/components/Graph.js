@@ -20,14 +20,14 @@ class GraphRow extends React.Component {
 
   render() {
     const {ts, cpu, delta, name, visible, active, data, action} = this.props;
+    const hasData = !isEmpty(data);
     Log.debug(`GraphRow ${ts} render ${visible}`);
     return (visible) ? (
-      <Row negative={!isEmpty(data)} {...{active}} onClick={action(ts)}>
-
+      <Row negative={hasData} {...{active}} onClick={action(ts)}>
         <Popup trigger={<Cell textAlign='center'>{ts}</Cell>}
-               position='left center' disabled={isEmpty(data)}>
+               position='left center' disabled={!hasData}>
           <Popup.Content>
-            <ClassTable {...{data, ts}}/>
+            {hasData ? <ClassTable {...{data, ts}}/> : null}
           </Popup.Content>
         </Popup>
         <Cell textAlign='center'>{cpu}</Cell>
