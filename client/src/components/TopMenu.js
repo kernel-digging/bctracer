@@ -5,10 +5,10 @@ import {
   TYPE_CPU,
   TYPE_MISC,
 } from '../constants/AppConstants';
-import Filter from './Filter';
+import GraphFilter from './GraphFilter';
 import {Sticky, Menu, Dropdown} from 'semantic-ui-react';
 
-const FilterMenu = ({ctx, stickyRef}) => {
+const TopMenu = ({ctx, stickyRef}) => {
   return (
     <Sticky context={stickyRef}>
       <Menu className='small-mar-top' size='mini'>
@@ -26,13 +26,13 @@ const FilterMenu = ({ctx, stickyRef}) => {
         {ctx.init ?
           <Menu.Menu position='right'>
             <Menu.Item name='filter-misc'>
-              <Filter type={TYPE_MISC} filter={ctx.filter.show}
-                      action={ctx.doFilter(TYPE_MISC)}/>
+              <GraphFilter type={TYPE_MISC} filter={ctx.filter.show}
+                           action={ctx.doFilter(TYPE_MISC)}/>
             </Menu.Item>
 
             <Menu.Item name='filter-cpu'>
-              <Filter type={TYPE_CPU} filter={ctx.filter.cpu}
-                      action={ctx.doFilter(TYPE_CPU)}/>
+              <GraphFilter type={TYPE_CPU} filter={ctx.filter.cpu}
+                           action={ctx.doFilter(TYPE_CPU)}/>
             </Menu.Item>
 
             <Dropdown item icon='filter' simple>
@@ -44,4 +44,4 @@ const FilterMenu = ({ctx, stickyRef}) => {
   );
 };
 
-export default FilterMenu;
+export default TopMenu;

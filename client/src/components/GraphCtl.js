@@ -70,7 +70,7 @@ class GraphCtl extends React.Component {
     this.update({...{filter}}, render);
   }
 
-  // Manipulating Filter
+  // Manipulating GraphFilter
   doFilter(type) {
     return (value) => () => {
       let traces = {...this.state.traces};

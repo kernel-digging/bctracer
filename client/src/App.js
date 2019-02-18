@@ -8,7 +8,7 @@ import Header from './components/Header';
 
 import GraphCtl from './components/GraphCtl';
 import Graph from './components/Graph';
-import FilterMenu from './components/FilterMenu';
+import TopMenu from './components/TopMenu';
 import CodeView from './components/CodeView';
 import Hello from './components/Hello';
 
@@ -32,7 +32,7 @@ class App extends React.Component {
                 <Container>
                   <div ref={r => this.ctxRef = r}>
                     <Header/>
-                    <FilterMenu {...{ctx, stickyRef: this.ctxRef}} />
+                    <TopMenu {...{ctx, stickyRef: this.ctxRef}} />
                     {ctx.update || ctx.init ?
                       <Graph traces={ctx.traces} action={ctx.onSelect}/>
                       : <Hello {...{ctx}}/>}

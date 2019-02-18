@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 
 const {Row, Body, Cell} = Table;
 
-const ClassRow = ({k, v, pv}) => {
+const DiffRow = ({k, v, pv}) => {
   let val = v, diff = !isEqual(v, pv);
   if (diff)
     val = `${pv} -> ${v}`;
@@ -16,23 +16,23 @@ const ClassRow = ({k, v, pv}) => {
   </Row>);
 };
 
-class ClassTable extends React.Component {
+class ClassDiff extends React.Component {
   render() {
     const {ts, data: {prev: _prev, curr: _curr}} = this.props;
     let rows = [];
     Object.entries(_curr).forEach(([k, v]) => {
       const pv = _prev[k] ? _prev[k] : v;
-      rows.push(<ClassRow key={`${ts}_${k}`} {...{k, v, pv}} />);
+      rows.push(<DiffRow key={`${ts}_${k}`} {...{k, v, pv}} />);
     });
     return (<Table compact='very'><Body>{rows}</Body></Table>);
   }
 }
 
-ClassTable.propTypes = {
+ClassDiff.propTypes = {
   data: PropTypes.shape({
     prev: PropTypes.object,
     curr: PropTypes.object.isRequired,
   }),
 };
 
-export default ClassTable;
+export default ClassDiff;

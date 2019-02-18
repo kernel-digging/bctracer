@@ -1,7 +1,7 @@
 import React from 'react';
 import {Popup, Table} from 'semantic-ui-react';
 import {isEmpty, isEqual} from 'lodash';
-import ClassTable from './Class';
+import ClassDiff from './ClassDiff';
 import {Log} from '../constants/AppConstants';
 
 const {Header, HeaderCell, Row, Body, Cell} = Table;
@@ -27,7 +27,7 @@ class GraphRow extends React.Component {
         <Popup trigger={<Cell textAlign='center'>{ts}</Cell>}
                position='left center' disabled={!hasData}>
           <Popup.Content>
-            {hasData ? <ClassTable {...{data, ts}}/> : null}
+            {hasData ? <ClassDiff {...{data, ts}}/> : null}
           </Popup.Content>
         </Popup>
         <Cell textAlign='center'>{cpu}</Cell>

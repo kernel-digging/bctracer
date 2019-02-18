@@ -3,8 +3,7 @@ import {Segment} from 'semantic-ui-react';
 import Checkbox from 'semantic-ui-react/dist/commonjs/modules/Checkbox';
 import {TYPE_CPU, TYPE_MISC} from '../constants/AppConstants';
 
-// data-type='class'
-const Filter = ({value, chk: defaultChecked, action}) =>
+const Filters = ({value, chk: defaultChecked, action}) =>
   <Checkbox {...{
     value,
     defaultChecked,
@@ -12,10 +11,10 @@ const Filter = ({value, chk: defaultChecked, action}) =>
     label: `${value}ㅤ`,
   }}/>;
 
-const Filters = ({type, filter, action}) => {
+const GraphFilter = ({type, filter, action}) => {
   let filters = [];
   Object.entries(filter).forEach(
-    ([k, v]) => filters.push(<Filter key={`filter-${k}`} value={k}
+    ([k, v]) => filters.push(<Filters key={`filter-${k}`} value={k}
                                      chk={v} {...{action}}/>));
 
   let header =
@@ -30,4 +29,4 @@ const Filters = ({type, filter, action}) => {
   );
 };
 
-export default Filters;
+export default GraphFilter;
