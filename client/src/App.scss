@@ -66,16 +66,19 @@
   padding-bottom: 0px !important
 }
 
+$CODE_WIDTH: 35vw;
+$MAIN_WIDTH: 100vw - $CODE_WIDTH;
+
 .main.container {
   overflow: auto;
-  max-height: 99vh;
-}
+  height: 99vh;
 
-.main.container.code-view {
-  max-width: 65vw !important;
-  margin: inherit !important;
+  &.code-view {
+    max-width: $MAIN_WIDTH !important;
+    margin: inherit !important;
+  }
 }
 
 .code-view.sidebar {
-  width: 35vw !important;
+  width: $CODE_WIDTH !important;
 }

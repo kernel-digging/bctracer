@@ -1,23 +1,14 @@
 /* eslint no-extend-native: 'off' */
-import React, {Fragment} from 'react';
+import React from 'react';
 import {Container, Sidebar, Segment} from 'semantic-ui-react';
 
-import './App.css';
+import './App.scss';
 import Header from './components/Header';
 
 import GraphCtl from './components/GraphCtl';
 import Graph from './components/Graph';
 import FilterMenu from './components/FilterMenu';
 import CodeView from './components/CodeView';
-
-let pusherStyle = ({codeView}) => {
-  let res = {overflow: 'auto', maxHeight: '99vh '};
-  if (codeView) {
-    res['maxWidth'] = '65vw !important';
-    res['margin'] = `inherit !important`;
-  }
-  return res;
-};
 
 // Maybe Later.
 // TODO: apply prop-types.
