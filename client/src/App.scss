@@ -32,38 +32,41 @@
   }
 }
 
-
 .page.header {
-  padding: 2em 0em 0em 0em;
+  padding: 2em 0rem 0rem 0rem;
 }
 
 .no-mar {
-  margin: 0px !important
+  margin: 0rem !important
 }
 
 .no-mar-top {
-  margin-top: 0px !important
+  margin-top: 0rem !important
+}
+
+.small-mar-top {
+  margin-top: 1rem !important
 }
 
 .no-mar-bot {
-  margin-bottom: 0px !important
+  margin-bottom: 0rem !important
 }
 
 .no-pad {
-  padding: 0px !important
+  padding: 0rem !important
 }
 
 .no-pad-vert {
-  padding-top: 0px !important;
-  padding-bottom: 0px !important
+  padding-top: 0rem !important;
+  padding-bottom: 0rem !important
 }
 
 .no-pad-top {
-  padding-top: 0px !important
+  padding-top: 0rem !important
 }
 
 .no-pad-bot {
-  padding-bottom: 0px !important
+  padding-bottom: 0rem !important
 }
 
 $CODE_WIDTH: 35vw;

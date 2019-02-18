@@ -18,6 +18,9 @@ String.prototype.eq = function(_cmp) {
 };
 
 class App extends React.Component {
+  state = {};
+  contextRef = ctxRef => this.setState({ ctxRef });
+
   render() {
     return (
       <GraphCtl>
@@ -28,9 +31,9 @@ class App extends React.Component {
             <Sidebar.Pusher>
               <Container className={`main ${ctx.codeView ? 'code-view' : ''}`}
                          fluid>
-                <Container>
+                <Container ref={this.contextRef}>
                   <Header/>
-                  <FilterMenu {...{ctx}} />
+                  <FilterMenu {...{ctx, ref: this.state.ctxRef}} />
                   <Graph traces={ctx.traces} action={ctx.onSelect}/>
                 </Container>
               </Container>
