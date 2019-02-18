@@ -1,4 +1,4 @@
-import {isEqual, transform, isObject} from 'lodash';
+import {isEqual, transform, isObject, shuffle} from 'lodash';
 import winston from 'winston';
 
 // const DBG = null;
@@ -30,6 +30,10 @@ export function debugDiff(object, base) {
 
   return changes(object, base);
 }
+
+export const COLORS = shuffle([
+  'red', 'orange', 'yellow', 'olive', 'green', 'teal',
+  'blue', 'violet', 'purple', 'pink', 'brown', 'grey', 'black']);
 
 // Delimits '|' and '\d)'
 // RexEx lookahead used. use only ES2018 supported browsers.

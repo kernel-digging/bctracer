@@ -1,10 +1,20 @@
 import React from 'react';
-import {Popup, Table} from 'semantic-ui-react';
+import {Popup, Label, Table} from 'semantic-ui-react';
 import {isEmpty, isEqual} from 'lodash';
 import ClassDiff from './ClassDiff';
-import {Log} from '../constants/AppConstants';
+import {COLORS, Log} from '../constants/AppConstants';
+import {CtxConsumer} from './GraphCtl';
 
 const {Header, HeaderCell, Row, Body, Cell} = Table;
+
+const ArgLabel = ({idx}) => (
+  <CtxConsumer>
+    {({state: {classTypes: type}}) =>
+      (<Label style={{'fontSize': '0.90rem', 'padding': '0.35rem 0.85rem'}}
+              size='small' color={COLORS[idx]} basic
+              content={type[idx].split(' ').slice(-2).join(' ')}/>)}
+  </CtxConsumer>
+);
 
 class GraphRow extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
@@ -18,9 +28,21 @@ class GraphRow extends React.Component {
     return _visible || _active || _data;
   }
 
+  funcName = () => {
+    const {ts, args, name: _name} = this.props;
+    let name = _name, label = [], end = null;
+    if (!isEmpty(args)) {
+      name = name.substr(0, name.indexOf('(') + 1) + ' ';
+      args.forEach(i => label.push(<ArgLabel key={`${ts}_arg${i}`} idx={i}/>));
+      end = ' ) {';
+    }
+    return [name, label, end];
+  };
+
   render() {
-    const {ts, cpu, delta, name, visible, active, data, action} = this.props;
+    const {ts, cpu, delta, visible, active, data, action} = this.props;
     const hasData = !isEmpty(data);
+    const [name, label, end] = this.funcName();
     Log.debug(`GraphRow ${ts} render ${visible}`);
     return (visible) && (
       <Row negative={hasData} {...{active}} onClick={action(ts)}>
@@ -32,7 +54,9 @@ class GraphRow extends React.Component {
         </Popup>
         <Cell textAlign='center'>{cpu}</Cell>
         <Cell textAlign='center'>{delta}</Cell>
-        <Cell>{name.replace(/\s\s/g, 'ㅤ')}</Cell>
+        <Cell>
+          {name.replace(/\s\s/g, 'ㅤ')}{label}{end}
+        </Cell>
       </Row>);
   }
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import {initial, size, inRange, isEmpty, last, trim, includes, pull}
+import {initial, size, inRange, isEmpty, last, trim, includes, pull, union}
   from 'lodash';
 import {LOG_SPLIT, LOG_IGNORE, TYPE_CPU, TYPE_MISC}
   from '../constants/AppConstants';
@@ -14,6 +14,7 @@ const traceObj =
     delta,
     name,
     data: {},
+    args: [], // index for ClassTypes
     visible: true,
     active: false,
   });
@@ -24,6 +25,7 @@ class GraphCtl extends React.Component {
     this.state = {
       traces: {},
       hasData: [],
+      classTypes: [],
       filter: {
         [TYPE_CPU]: null,
         [TYPE_MISC]: {
@@ -92,7 +94,7 @@ class GraphCtl extends React.Component {
 
   parseTrace(data, render = true) {
     const lines = data.split('\n');
-    let cpus = new Set();
+    let cpus = new Set(), classTypes = [];
     let traces = {}, idx = 0;
 
     lines.forEach((line) => {
@@ -105,11 +107,23 @@ class GraphCtl extends React.Component {
 
         traces[ts] = traceObj(ts, cpu, delta, name);
         cpus.add(cpu);
+
+        const [open, close] = [name.indexOf('('), name.indexOf(')')];
+        if (close - open > 1) {
+          // Shrink pointer whitespace. ' * *' => '**'
+          const args = name.substring(open + 1, close).
+            split(',').
+            map(trim).
+            map(arg => arg.replace(/ \*/g, '*'));
+          classTypes = union(classTypes, args);
+          args.forEach(arg => traces[ts].args.push(classTypes.indexOf(arg)));
+        }
       }
     });
 
+    console.log(classTypes);
     const filter = this.initFilter(cpus);
-    this.update({traces, filter, init: true}, render);
+    this.update({traces, filter, classTypes, init: true}, render);
   }
 
   initFilter(cpus, cpu = {}) {
