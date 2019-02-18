@@ -43,7 +43,7 @@ class FileBtn extends React.Component {
               window.alert('Not supported syntax. Upload JSON file.');
           }
           Log.info(`${action.name} result : ${res}`);
-          toggle(res ? type : null);
+          toggle(res && type);
         };
 
         toggle();
@@ -93,10 +93,9 @@ class Hello extends React.Component {
     const {ctx} = this.props;
     const {loading, Trace, Class} = this.state;
 
-    const msg = (Trace && Class) ? 'Render Start' :
-      (Trace) ? 'Skip Class and Render' : null;
-    const color = (Trace && Class) ? 'green' :
-      (Trace) ? 'red' : null;
+    const msg = (Trace && Class) ? 'Render Start' : (Trace) &&
+      'Skip Class and Start Render';
+    const color = (Trace && Class) ? 'green' : (Trace) && 'red';
     return (
       <Fragment>
 
@@ -132,16 +131,15 @@ class Hello extends React.Component {
             </Grid.Row>
           </Grid>
         </Segment>
-        {Trace ?
-          <Button fluid animated color={color} inverted={Trace && Class}
-                  onClick={ctx.toggleRender}>
-            <Button.Content visible content={msg}/>
-            <Button.Content hidden>
-              <Icon name='arrow right'/>
-            </Button.Content>
-          </Button>
-          : null}
-
+        {Trace &&
+        <Button fluid animated color={color} inverted={Trace && Class}
+                onClick={ctx.toggleRender}>
+          <Button.Content visible content={msg}/>
+          <Button.Content hidden>
+            <Icon name='arrow right'/>
+          </Button.Content>
+        </Button>
+        }
       </Fragment>
     );
   }

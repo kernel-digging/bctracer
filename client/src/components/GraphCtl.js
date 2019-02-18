@@ -38,6 +38,7 @@ class GraphCtl extends React.Component {
   // Graph Render
   shouldComponentUpdate(nextProps, nextState) { return nextState.update; }
 
+  // Must keep callback ternary null.
   update = (state, doRender = null) => this.setState(state,
     (doRender ? this.toggleRender : null));
 
@@ -97,7 +98,7 @@ class GraphCtl extends React.Component {
         const name = last(row);
         let [ts, cpu = 'X', delta] = initial(row).map(trim);
 
-        LOG_IGNORE.forEach(i => (name.includes(i)) ? ts = `_${idx++}` : null);
+        LOG_IGNORE.forEach(i => name.includes(i) && (ts = `_${idx++}`));
 
         traces[ts] = traceObj(ts, cpu, delta, name);
         cpus.add(cpu);
@@ -127,7 +128,7 @@ class GraphCtl extends React.Component {
     const max_ts = last(trace_ts);
     Object.keys(data).sort().forEach((c, i, k) => {
       const [p, n] = [k[i - 1], k[i + 1]];
-      const prev = (p) ? data[p] : null;
+      const prev = (p) && data[p];
 
       const curr = data[c];
       const [ts, name] = c.split('/');
@@ -145,7 +146,7 @@ class GraphCtl extends React.Component {
       }
     });
 
-    this.update({traces: traces, hasData: hasData}, render);
+    this.update({traces, hasData}, render);
   }
 
   componentDidUpdate() {

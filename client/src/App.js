@@ -24,7 +24,7 @@ class App extends React.Component {
       <GraphCtl>
         {ctx => (
           <Sidebar.Pushable as={Segment}>
-            <CodeView visible={ctx.codeView}/>
+            {ctx.codeView && <CodeView visible={ctx.codeView}/>}
 
             <Sidebar.Pusher>
               <Container className={`main ${ctx.codeView ? 'code-view' : ''}`}

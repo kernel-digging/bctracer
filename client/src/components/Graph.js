@@ -22,18 +22,18 @@ class GraphRow extends React.Component {
     const {ts, cpu, delta, name, visible, active, data, action} = this.props;
     const hasData = !isEmpty(data);
     Log.debug(`GraphRow ${ts} render ${visible}`);
-    return (visible) ? (
+    return (visible) && (
       <Row negative={hasData} {...{active}} onClick={action(ts)}>
         <Popup trigger={<Cell textAlign='center'>{ts}</Cell>}
                position='left center' disabled={!hasData}>
           <Popup.Content>
-            {hasData ? <ClassDiff {...{data, ts}}/> : null}
+            {hasData && <ClassDiff {...{data, ts}}/>}
           </Popup.Content>
         </Popup>
         <Cell textAlign='center'>{cpu}</Cell>
         <Cell textAlign='center'>{delta}</Cell>
         <Cell>{name.replace(/\s\s/g, 'ㅤ')}</Cell>
-      </Row>) : null;
+      </Row>);
   }
 }
 
