@@ -21,7 +21,6 @@ class GraphCtl extends React.Component {
     this.state = {
       traces: {},
       hasData: [],
-      cpus: new Set(),
       filter: {
         [TYPE_CPU]: null,
         [TYPE_MISC]: {
@@ -39,10 +38,10 @@ class GraphCtl extends React.Component {
   // Graph Render
   shouldComponentUpdate(nextProps, nextState) { return nextState.update; }
 
-  toggleRender = () => this.setState({update: !this.state.update});
-
   update = (state, doRender = null) => this.setState(state,
     (doRender ? this.toggleRender : null));
+
+  toggleRender = () => this.setState({update: !this.state.update});
 
   toggleCodeView = () => this.update({codeView: !this.state.codeView}, true);
 
@@ -56,18 +55,6 @@ class GraphCtl extends React.Component {
 
       this.update({...traces, ...filter}, true);
     };
-  }
-
-  // Initialize Context
-  initCtx = (ctx, render) => this.setState({...ctx, init: true},
-    () => this.initFilter(render));
-
-  initFilter(render) {
-    let filter = {...this.state.filter};
-    let cpu = {};
-    Array.from(this.state.cpus).sort().forEach(k => cpu[k] = true);
-    filter[TYPE_CPU] = cpu;
-    this.update({...{filter}}, render);
   }
 
   // Manipulating GraphFilter
@@ -116,7 +103,16 @@ class GraphCtl extends React.Component {
         cpus.add(cpu);
       }
     });
-    this.initCtx({traces: traces, cpus: cpus}, render);
+
+    const filter = this.initFilter(cpus);
+    this.update({traces, filter, init: true}, render);
+  }
+
+  initFilter(cpus, cpu = {}) {
+    let filter = {...this.state.filter};
+    Array.from(cpus).sort().forEach(k => cpu[k] = true);
+    filter[TYPE_CPU] = cpu;
+    return filter;
   }
 
   parseClass(data, render = true) {
