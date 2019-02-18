@@ -1,8 +1,11 @@
 import {isEqual, transform, isObject} from 'lodash';
 import winston from 'winston';
 
+// const DBG = null;
+export const DBG = true;
+
 const logger = winston.createLogger({
-  level: 'debug',
+  level: DBG ? 'debug' : 'info',
   transports: [
     new winston.transports.Console({
       format: winston.format.combine(

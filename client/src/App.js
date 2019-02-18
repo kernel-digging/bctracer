@@ -1,6 +1,7 @@
 /* eslint no-extend-native: 'off' */
 import React from 'react';
 import {Container, Sidebar, Segment} from 'semantic-ui-react';
+import 'semantic-ui-css/semantic.css';
 
 import './App.scss';
 import Header from './components/Header';
