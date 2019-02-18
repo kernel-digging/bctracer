@@ -4,6 +4,9 @@ import {initial, size, inRange, isEmpty, last, trim, includes, pull}
 import {LOG_SPLIT, LOG_IGNORE, TYPE_CPU, TYPE_MISC}
   from '../constants/AppConstants';
 
+const GraphCtx = React.createContext();
+const {Provider, Consumer: CtxConsumer} = GraphCtx;
+
 const traceObj =
   (ts, cpu, delta, name) => ({
     ts,
@@ -154,16 +157,21 @@ class GraphCtl extends React.Component {
   }
 
   render() {
-    return this.props.children({
-      ...this.state,
-      onSelect: this.onSelect.bind(this),
-      doFilter: this.doFilter.bind(this),
-      parseTrace: this.parseTrace.bind(this),
-      parseClass: this.parseClass.bind(this),
-      toggleRender: this.toggleRender.bind(this),
-      toggleCodeView: this.toggleCodeView.bind(this),
-    });
+    return (
+      <Provider value={{state:this.state}}>
+        {this.props.children({
+          ...this.state,
+          onSelect: this.onSelect.bind(this),
+          doFilter: this.doFilter.bind(this),
+          parseTrace: this.parseTrace.bind(this),
+          parseClass: this.parseClass.bind(this),
+          toggleRender: this.toggleRender.bind(this),
+          toggleCodeView: this.toggleCodeView.bind(this),
+        })}
+      </Provider>
+    );
   }
 }
 
 export default GraphCtl;
+export {CtxConsumer};
