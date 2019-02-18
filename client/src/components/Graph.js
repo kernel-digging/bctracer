@@ -10,15 +10,15 @@ class GraphRow extends React.Component {
     const {visible: c_visible, active: c_active, data: c_data} = this.props;
     const {visible: n_visible, active: n_active, data: n_data} = nextProps;
 
-    let _visible = !isEqual(c_visible, n_visible);
-    let _active = !isEqual(c_active, n_active);
-    let _data = !isEqual(c_data, n_data);
+    const _visible = !isEqual(c_visible, n_visible);
+    const _active = !isEqual(c_active, n_active);
+    const _data = !isEqual(c_data, n_data);
 
     return _visible || _active || _data;
   }
 
   render() {
-    let {ts, cpu, delta, name, visible, active, data, action} = this.props;
+    const {ts, cpu, delta, name, visible, active, data, action} = this.props;
     return (visible) ? (
       <Row negative={!isEmpty(data)} {...{active}} onClick={action(ts)}>
 

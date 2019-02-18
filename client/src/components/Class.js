@@ -15,13 +15,6 @@ const ClassRow = ({k, v, pv}) => {
   </Row>);
 };
 
-// TODO: Don't know why it keeps rendering
-// shouldComponentUpdate(nextProps, nextState) {
-//   console.log(!isEqual(this.props, nextProps));
-//
-//   return !isEqual(this.props, nextProps);
-// }
-
 class ClassTable extends React.Component {
   render() {
     let res = null;

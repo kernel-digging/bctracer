@@ -1,7 +1,7 @@
 import React from 'react';
 import {initial, size, inRange, isEmpty, last, trim, includes, pull}
   from 'lodash';
-import {LOG_SPLIT, LOG_IGNORE, TRACE_LOG, TYPE_CPU, TYPE_MISC}
+import {LOG_SPLIT, LOG_IGNORE, TYPE_CPU, TYPE_MISC}
   from '../constants/AppConstants';
 
 const traceObj =
@@ -83,7 +83,7 @@ class GraphCtl extends React.Component {
   isVisible(key) {
     const {filter, traces: {[key]: trace}} = this.state;
 
-    let cpuFilter = filter[TYPE_CPU][trace.cpu];
+    const cpuFilter = filter[TYPE_CPU][trace.cpu];
 
     let dataFilter = true;
     if (filter[TYPE_MISC]['data'] && isEmpty(trace.data))
@@ -121,20 +121,25 @@ class GraphCtl extends React.Component {
     let {traces: _traces} = this.state;
     let traces = {..._traces};
 
-    let trace_ts = Object.keys(_traces);
+    if ('string'.eq(typeof data))
+      data = JSON.parse(data);
+
+    const trace_ts = Object.keys(_traces);
+    const max_ts = last(trace_ts);
     Object.keys(data).sort().forEach((c, i, k) => {
-      let [p, n] = [k[i - 1], k[i + 1]];
-      let prev = (p) ? data[p] : null;
+      const [p, n] = [k[i - 1], k[i + 1]];
+      const prev = (p) ? data[p] : null;
 
-      let curr = data[c];
-      let [ts, name] = c.split('/');
-      let next_ts = (n) ? n.split('/')[0] : 99999999999999;
+      const curr = data[c];
+      const [ts, name] = c.split('/');
+      const next_ts = (n) ? n.split('/')[0] : (max_ts > ts) ? max_ts : ts;
 
-      let avail_ts = trace_ts.filter(_t =>
+      const avail_ts = trace_ts.filter(_t =>
         inRange(_t, ts, next_ts) &&
         trim(_traces[_t].name).startsWith(`${name}()`),
       );
 
+      // TODO: Check only one exists
       if (!isEmpty(avail_ts)) {
         traces[avail_ts[0]].data = {...{prev, curr}};
       }
