@@ -11,9 +11,6 @@ import FilterMenu from './components/FilterMenu';
 import CodeView from './components/CodeView';
 import Hello from './components/Hello';
 
-// Maybe Later.
-// TODO: apply prop-types.
-
 String.prototype.eq = function(_cmp) {
   return this.toString() === _cmp;
 };

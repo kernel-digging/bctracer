@@ -1,6 +1,7 @@
-import {isEmpty, isEqual} from 'lodash';
+import {isEqual} from 'lodash';
 import React from 'react';
 import {Table} from 'semantic-ui-react';
+import PropTypes from 'prop-types';
 
 const {Row, Body, Cell} = Table;
 
@@ -17,21 +18,21 @@ const ClassRow = ({k, v, pv}) => {
 
 class ClassTable extends React.Component {
   render() {
-    let res = null;
-    let {ts, data} = this.props;
-
-    if (!isEmpty(data)) {
-      const {prev: _prev, curr: _curr} = data;
-      let rows = [];
-      Object.entries(_curr).forEach(([k, v]) => {
-        let pv = _prev[k] ? _prev[k] : v;
-        rows.push(<ClassRow key={`${ts}_${k}`} {...{k, v, pv}} />);
-      });
-      res = (<Table compact='very'><Body>{rows}</Body></Table>);
-    }
-
-    return res;
+    const {ts, data: {prev: _prev, curr: _curr}} = this.props;
+    let rows = [];
+    Object.entries(_curr).forEach(([k, v]) => {
+      const pv = _prev[k] ? _prev[k] : v;
+      rows.push(<ClassRow key={`${ts}_${k}`} {...{k, v, pv}} />);
+    });
+    return (<Table compact='very'><Body>{rows}</Body></Table>);
   }
 }
+
+ClassTable.propTypes = {
+  data: PropTypes.shape({
+    prev: PropTypes.object,
+    curr: PropTypes.object.isRequired,
+  }),
+};
 
 export default ClassTable;
