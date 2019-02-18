@@ -20,6 +20,7 @@ class GraphCtl extends React.Component {
     super(props);
     this.state = {
       traces: {},
+      hasData: [],
       cpus: new Set(),
       filter: {
         [TYPE_CPU]: null,
@@ -29,15 +30,16 @@ class GraphCtl extends React.Component {
         },
         selected: [],
       },
-      render: false,
-      codeView: false
+      init: false,
+      update: false,
+      codeView: false,
     };
   }
 
   // Graph Render
-  shouldComponentUpdate(nextProps, nextState) { return nextState.render; }
+  shouldComponentUpdate(nextProps, nextState) { return nextState.update; }
 
-  toggleRender = () => this.setState({render: !this.state.render});
+  toggleRender = () => this.setState({update: !this.state.update});
 
   update = (state, doRender = null) => this.setState(state,
     (doRender ? this.toggleRender : null));
@@ -57,14 +59,15 @@ class GraphCtl extends React.Component {
   }
 
   // Initialize Context
-  initCtx = (ctx) => this.setState(ctx, this.initFilter);
+  initCtx = (ctx, render) => this.setState({...ctx, init: true},
+    () => this.initFilter(render));
 
-  initFilter() {
+  initFilter(render) {
     let filter = {...this.state.filter};
     let cpu = {};
     Array.from(this.state.cpus).sort().forEach(k => cpu[k] = true);
     filter[TYPE_CPU] = cpu;
-    this.update({...{filter}}, true);
+    this.update({...{filter}}, render);
   }
 
   // Manipulating Filter
@@ -81,12 +84,12 @@ class GraphCtl extends React.Component {
   }
 
   isVisible(key) {
-    const {filter, traces: {[key]: trace}} = this.state;
+    const {filter, hasData, traces: {[key]: trace}} = this.state;
 
     const cpuFilter = filter[TYPE_CPU][trace.cpu];
 
     let dataFilter = true;
-    if (filter[TYPE_MISC]['data'] && isEmpty(trace.data))
+    if (filter[TYPE_MISC]['data'] && !hasData.includes(key))
       dataFilter = false;
 
     let selectFilter = true;
@@ -96,8 +99,8 @@ class GraphCtl extends React.Component {
     return cpuFilter && dataFilter && selectFilter;
   };
 
-  parseTrace(data) {
-    let lines = data.split('\n');
+  parseTrace(data, render = true) {
+    const lines = data.split('\n');
     let cpus = new Set();
     let traces = {}, idx = 0;
 
@@ -113,13 +116,13 @@ class GraphCtl extends React.Component {
         cpus.add(cpu);
       }
     });
-
-    this.initCtx({traces: traces, cpus: cpus});
+    this.initCtx({traces: traces, cpus: cpus}, render);
   }
 
-  parseClass(data) {
-    let {traces: _traces} = this.state;
+  parseClass(data, render = true) {
+    const {traces: _traces} = this.state;
     let traces = {..._traces};
+    let hasData = [];
 
     if ('string'.eq(typeof data))
       data = JSON.parse(data);
@@ -141,15 +144,12 @@ class GraphCtl extends React.Component {
 
       // TODO: Check only one exists
       if (!isEmpty(avail_ts)) {
+        hasData.push(avail_ts[0]);
         traces[avail_ts[0]].data = {...{prev, curr}};
       }
     });
 
-    this.update({traces: traces}, true);
-  }
-
-  componentDidMount() {
-    this.parseTrace(TRACE_LOG);
+    this.update({traces: traces, hasData: hasData}, render);
   }
 
   componentDidUpdate() {
@@ -161,8 +161,10 @@ class GraphCtl extends React.Component {
       ...this.state,
       onSelect: this.onSelect.bind(this),
       doFilter: this.doFilter.bind(this),
+      parseTrace: this.parseTrace.bind(this),
       parseClass: this.parseClass.bind(this),
-      toggleCodeView : this.toggleCodeView.bind(this),
+      toggleRender: this.toggleRender.bind(this),
+      toggleCodeView: this.toggleCodeView.bind(this),
     });
   }
 }

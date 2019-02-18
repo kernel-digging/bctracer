@@ -85,3 +85,7 @@ $MAIN_WIDTH: 100vw - $CODE_WIDTH;
 .code-view.sidebar {
   width: $CODE_WIDTH !important;
 }
+
+.hello.placeholder.segment {
+  min-height: 50vh;
+}

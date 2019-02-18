@@ -9,6 +9,7 @@ import GraphCtl from './components/GraphCtl';
 import Graph from './components/Graph';
 import FilterMenu from './components/FilterMenu';
 import CodeView from './components/CodeView';
+import Hello from './components/Hello';
 
 // Maybe Later.
 // TODO: apply prop-types.
@@ -18,29 +19,31 @@ String.prototype.eq = function(_cmp) {
 };
 
 class App extends React.Component {
-  state = {};
-  contextRef = ctxRef => this.setState({ ctxRef });
+  ctxRef = null;
 
   render() {
     return (
       <GraphCtl>
-        {ctx => ctx.render ?
+        {ctx => (
           <Sidebar.Pushable as={Segment}>
             <CodeView visible={ctx.codeView}/>
 
             <Sidebar.Pusher>
               <Container className={`main ${ctx.codeView ? 'code-view' : ''}`}
                          fluid>
-                <Container ref={this.contextRef}>
-                  <Header/>
-                  <FilterMenu {...{ctx, ref: this.state.ctxRef}} />
-                  <Graph traces={ctx.traces} action={ctx.onSelect}/>
+                <Container>
+                  <div ref={r => this.ctxRef = r}>
+                    <Header/>
+                    <FilterMenu {...{ctx, stickyRef: this.ctxRef}} />
+                    {ctx.update || ctx.init ?
+                      <Graph traces={ctx.traces} action={ctx.onSelect}/>
+                      : <Hello {...{ctx}}/>}
+                  </div>
                 </Container>
               </Container>
             </Sidebar.Pusher>
           </Sidebar.Pushable>
-          : null
-        }
+        )}
       </GraphCtl>
 
     );
