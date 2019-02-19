@@ -2,12 +2,12 @@ from app import app
 from flask import request, jsonify
 import subprocess
 
-@app.route("/", methods=["GET"])
+@app.route("/api", methods=["GET"])
 def index():
-    return jsonify(message="Hello World!"), 200
+    return jsonify(status="Healthy!"), 200
 
 
-@app.route("/cmd", methods=["POST"])
+@app.route("/api/cmd", methods=["POST"])
 def cmd():
     req = request.get_json()
     command = 'sudo ' + req['command']
