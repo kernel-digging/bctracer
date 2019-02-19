@@ -1,0 +1,105 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  animation: App-logo-spin infinite 20s linear;
+  height: 40vmin;
+  pointer-events: none;
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.page.header {
+  padding: 2em 0rem 0rem 0rem;
+}
+
+.no-mar {
+  margin: 0rem !important
+}
+
+.no-mar-top {
+  margin-top: 0rem !important
+}
+
+.small-mar-top {
+  margin-top: 1rem !important
+}
+
+.small-mar {
+  margin-top: 1rem !important;
+  margin-bottom: 1rem !important;
+}
+
+.no-mar-bot {
+  margin-bottom: 0rem !important
+}
+
+.no-pad {
+  padding: 0rem !important
+}
+
+.no-pad-vert {
+  padding-top: 0rem !important;
+  padding-bottom: 0rem !important
+}
+
+.no-pad-top {
+  padding-top: 0rem !important
+}
+
+.no-pad-bot {
+  padding-bottom: 0rem !important
+}
+
+$CODE_WIDTH: 35vw;
+$MAIN_WIDTH: 100vw - $CODE_WIDTH;
+
+.main.container {
+  overflow: auto;
+  height: 99vh;
+
+  &.code-view {
+    max-width: $MAIN_WIDTH !important;
+    margin: inherit !important;
+  }
+}
+
+.code-view.sidebar {
+  width: $CODE_WIDTH !important;
+  height: inherit;
+}
+
+.hello.placeholder.segment {
+  min-height: 50vh;
+}
+
+span.args {
+  font-weight: bold;
+}
+
+.server-status.menu {
+  padding: inherit;
+}
