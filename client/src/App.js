@@ -20,15 +20,16 @@ class App extends React.Component {
   ctxRef = null;
 
   render() {
+    const mainClass = (codeView) => `main ${codeView ? 'code-view' : ''}`;
     return (
       <GraphCtl>
         {ctx => (
           <Sidebar.Pushable as={Segment}>
-            {ctx.codeView && <CodeView visible={ctx.codeView}/>}
+            {ctx.codeView && <CodeView visible={ctx.codeView}
+                                       selected={ctx.filter.selected}/>}
 
             <Sidebar.Pusher>
-              <Container className={`main ${ctx.codeView ? 'code-view' : ''}`}
-                         fluid>
+              <Container className={mainClass(ctx.codeView)} fluid>
                 <Container>
                   <div ref={r => this.ctxRef = r}>
                     <Header/>

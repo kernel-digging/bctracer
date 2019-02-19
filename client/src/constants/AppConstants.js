@@ -35,6 +35,23 @@ const _COLORS = [
   'red', 'orange', 'yellow', 'olive', 'green', 'teal',
   'blue', 'violet', 'purple', 'pink', 'brown', 'grey', 'black'];
 
+export const exampleCode = `
+    onSubmit(e) {
+      e.preventDefault();
+      const job = {
+        title: 'Developer',
+        company: 'Facebook'
+        };
+      }
+    onSubmit(e) {
+      e.preventDefault();
+      const job = {
+        title: 'Developer',
+        company: 'Facebook'
+        };
+      }
+  `;
+
 // Delimits '|' and '\d)'
 // RexEx lookahead used. use only ES2018 supported browsers.
 export const LOG_SPLIT = new RegExp('(?<=\\d)\\)|\\|', 'g');

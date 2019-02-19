@@ -2,24 +2,9 @@ import React from 'react';
 import Prism from '../prism.js';
 import '../prism.css';
 
-import {Grid, Icon, Header, Segment, Sidebar, Table} from 'semantic-ui-react';
-
-let example = `
-    onSubmit(e) {
-      e.preventDefault();
-      const job = {
-        title: 'Developer',
-        company: 'Facebook'
-        };
-      }
-    onSubmit(e) {
-      e.preventDefault();
-      const job = {
-        title: 'Developer',
-        company: 'Facebook'
-        };
-      }
-  `;
+import {Message, Grid, Icon, Header, Segment, Sidebar, Table}
+  from 'semantic-ui-react';
+import {exampleCode} from '../constants/AppConstants';
 
 const CodeBlock = ({snippet, line, keyword}) => (
   <pre className='line-numbers' data-line={line}>
@@ -30,12 +15,13 @@ const CodeBlock = ({snippet, line, keyword}) => (
 );
 
 class CodeView extends React.Component {
-  componentDidMount() {
-    Prism.highlightAll();
+  componentDidUpdate() {
+    const {selected} = this.props;
+    selected.length === 1 && Prism.highlightAll();
   }
 
   render() {
-    let {visible, code = example} = this.props;
+    let {visible, selected, code = exampleCode} = this.props;
     return (
       <Sidebar as={Segment} animation='overlay' direction='right'
                className='code-view' width='very wide' visible={visible}>
@@ -86,7 +72,17 @@ class CodeView extends React.Component {
                 <Icon name='search'/>
                 Code Viewer
               </Header>
-              <CodeBlock snippet={code} line={'2, 4-9'}/>
+              {selected.length === 1 ?
+                <CodeBlock snippet={code} line={'2, 4-9'}/>
+                :
+                <Message floating icon warning>
+                  <Icon name='exclamation triangle'/>
+                  <Message.Content>
+                    <Message.Header>Select only one</Message.Header>
+                    Multiple rows are selected
+                  </Message.Content>
+                </Message>
+              }
             </Grid.Column>
           </Grid.Row>
         </Grid>
