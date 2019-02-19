@@ -7,23 +7,26 @@ import {
 } from '../constants/AppConstants';
 import GraphFilter from './GraphFilter';
 import {Sticky, Menu, Dropdown} from 'semantic-ui-react';
+import {WithCtx} from './GraphCtl';
 
 const TopMenu = ({ctx, stickyRef}) => {
+  const {state, actions} = ctx;
+
   return (
     <Sticky context={stickyRef}>
       <Menu className='small-mar-top' size='mini'>
         {DBG &&
         <Fragment>
           <Menu.Item name='class' content={'Load Trace'}
-                     onClick={() => ctx.parseTrace(TRACE_LOG)}/>
+                     onClick={() => actions.parseTrace(TRACE_LOG)}/>
           <Menu.Item name='class' content={'Load Class'}
-                     onClick={() => ctx.parseClass(CLASS_LOG)}/>
+                     onClick={() => actions.parseClass(CLASS_LOG)}/>
           <Menu.Item name='codeView' content={'Code View'}
-                     onClick={ctx.toggleCodeView}/>
+                     onClick={actions.toggleCodeView}/>
         </Fragment>
         }
 
-        {ctx.init &&
+        {state.init &&
         <Menu.Menu position='right'>
           <Menu.Item name='filter-misc'>
             <GraphFilter type={TYPE_MISC}/>
@@ -42,4 +45,4 @@ const TopMenu = ({ctx, stickyRef}) => {
   );
 };
 
-export default TopMenu;
+export default WithCtx(TopMenu);

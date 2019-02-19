@@ -75,6 +75,7 @@ class GraphCtl extends React.Component {
   actions = {
     doFilter: this.doFilter.bind(this),
     onSelect: this.onSelect.bind(this),
+    toggleCodeView: this.toggleCodeView.bind(this),
   };
 
   isVisible(key) {
@@ -178,7 +179,6 @@ class GraphCtl extends React.Component {
           parseTrace: this.parseTrace.bind(this),
           parseClass: this.parseClass.bind(this),
           toggleRender: this.toggleRender.bind(this),
-          toggleCodeView: this.toggleCodeView.bind(this),
         })}
       </Provider>
     );
