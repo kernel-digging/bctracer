@@ -84,6 +84,7 @@ $MAIN_WIDTH: 100vw - $CODE_WIDTH;
 
 .code-view.sidebar {
   width: $CODE_WIDTH !important;
+  height: inherit;
 }
 
 .hello.placeholder.segment {
@@ -92,4 +93,8 @@ $MAIN_WIDTH: 100vw - $CODE_WIDTH;
 
 span.args {
     font-weight: bold;
+}
+
+.server-status.menu {
+    padding: inherit;
 }

@@ -18,6 +18,12 @@ const logger = winston.createLogger({
 
 export const Log = logger;
 
+export const axiosDBG = (obj) => {
+  Log.debug(`Server Response: ${obj}`);
+  obj.ok = (obj.status === 200);
+  return obj;
+};
+
 export function debugDiff(object, base) {
   function changes(object, base) {
     return transform(object, function(result, value, key) {
