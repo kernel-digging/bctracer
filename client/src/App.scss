@@ -48,6 +48,11 @@
   margin-top: 1rem !important
 }
 
+.small-mar {
+  margin-top: 1rem !important;
+  margin-bottom: 1rem !important;
+}
+
 .no-mar-bot {
   margin-bottom: 0rem !important
 }
@@ -92,9 +97,9 @@ $MAIN_WIDTH: 100vw - $CODE_WIDTH;
 }
 
 span.args {
-    font-weight: bold;
+  font-weight: bold;
 }
 
 .server-status.menu {
-    padding: inherit;
+  padding: inherit;
 }

@@ -1,4 +1,4 @@
-import {isEqual, transform, isObject, shuffle} from 'lodash';
+import {isEqual, transform, isObject} from 'lodash';
 import winston from 'winston';
 
 // const DBG = null;
@@ -38,9 +38,6 @@ export function debugDiff(object, base) {
 }
 
 export const UNIT_OFFSET = 1000;
-const _COLORS = [
-  'red', 'orange', 'yellow', 'olive', 'green', 'teal',
-  'blue', 'violet', 'purple', 'pink', 'brown', 'grey', 'black'];
 
 export const exampleCode = `
     onSubmit(e) {

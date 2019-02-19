@@ -6,14 +6,14 @@ import {
   TYPE_MISC,
 } from '../constants/AppConstants';
 import GraphFilter from './GraphFilter';
-import {Sticky, Menu, Dropdown} from 'semantic-ui-react';
+import {Sticky, Menu} from 'semantic-ui-react';
 import {WithCtx} from './GraphCtl';
 
 const TopMenu = ({ctx, stickyRef}) => {
   const {state, actions} = ctx;
   return (
     <Sticky context={stickyRef}>
-      <Menu className='small-mar-top' size='mini'>
+      <Menu className='small-mar' size='mini'>
         {DBG &&
         <Fragment>
           <Menu.Item name='class' content={'Load Trace'}
@@ -36,10 +36,7 @@ const TopMenu = ({ctx, stickyRef}) => {
           <Menu.Item name='filter-cpu'>
             <GraphFilter type={TYPE_CPU}/>
           </Menu.Item>
-
-          <Dropdown item icon='filter' simple>
-          </Dropdown>
-        </Menu.Menu>
+          </Menu.Menu>
         }
       </Menu>
     </Sticky>

@@ -26,7 +26,7 @@ class FileBtn extends React.Component {
     if (files && files.length > 0) {
       const file = files[0];
 
-      if (file.size <= 10 * 1024 * 1024) {
+      if (file.size <= 2 * 10 * 1024 * 1024) {
         const {type, ctx: {actions}, loading: toggle} = this.props;
         let action, fileReader = new FileReader();
 
@@ -51,7 +51,7 @@ class FileBtn extends React.Component {
         this.setName(file.name);
         setTimeout(() => fileReader.readAsText(file), 500);
       } else {
-        window.alert('Upload file less than 10MB');
+        window.alert('Upload file less than 20MB');
       }
     }
   };

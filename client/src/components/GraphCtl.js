@@ -154,8 +154,8 @@ class GraphCtl extends React.Component {
         const [open, close] = [name.indexOf('('), name.indexOf(')')];
         if (close - open > 1) {
           // Shrink pointer whitespace. ' * *' => '**'
-          const args = name.substring(open + 1, close).split(',').map(trim).
-            map(arg => arg.replace(/ \*/g, '*'));
+          const args = name.substring(open + 1, close).split(',').map(trim)
+            .map(arg => arg.replace(/ \*/g, '*'));
           classTypes = union(classTypes, args);
           traces[ts].args = args.map(arg => classTypes.indexOf(arg));
         }
