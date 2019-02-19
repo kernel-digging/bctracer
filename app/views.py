@@ -21,9 +21,9 @@ def cmd():
 @app.route("/api/code", methods=["POST"])
 def code():
     req = request.get_json()
-    cmd = "grep -A 35 -Fx \"$(awk 'NR=={line}' {path}/{file})\" {path}/{file}".format(**req, path="/home/danieltl/git/linux")
-    command = 'sudo ' + cmd
 
+    # AWK programmed
+    command = '''R() { L=$1; P=$2; F=$3; E=$(awk -v line=$L -v i=1 '/^}/{if(NR>line && i){print NR; i--; } }' $P/$F); awk "NR>=$L && NR<=$E+1" $P/$F; } ; R %s %s %s''' % (req['line'],  "/home/danieltl/git/linux", req['file'])
     print(command)
 
     p = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
