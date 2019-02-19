@@ -1,7 +1,7 @@
 import React from 'react';
 import {initial, size, inRange, isEmpty, last, trim, includes, pull, union}
   from 'lodash';
-import {LOG_SPLIT, LOG_IGNORE, TYPE_CPU, TYPE_MISC}
+import {Log, LOG_SPLIT, LOG_IGNORE, TYPE_CPU, TYPE_MISC}
   from '../constants/AppConstants';
 
 const GraphCtx = React.createContext();
@@ -120,7 +120,7 @@ class GraphCtl extends React.Component {
       }
     });
 
-    console.log(classTypes);
+    Log.debug(classTypes);
     const filter = this.initFilter(cpus);
     this.update({traces, filter, classTypes, init: true}, render);
   }

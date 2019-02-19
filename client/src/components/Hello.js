@@ -62,7 +62,8 @@ class FileBtn extends React.Component {
       <Fragment>
         <input style={{'display': 'none'}} type="file"
                ref={r => {this.input = r;}} onChange={this.success}/>
-        <Button onClick={this.upload} primary toggle {...{active}}>
+        <Button onClick={this.upload} primary toggle
+                {...{active}} disabled={active}>
           {active ? `${name} Imported` : 'Select File'}
         </Button>
       </Fragment>
