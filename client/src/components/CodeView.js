@@ -6,7 +6,7 @@ import {
   Message, Grid, Icon, Header, Segment,
   Sidebar, Table, Dimmer, Loader,
 } from 'semantic-ui-react';
-import {exampleCode, axiosDBG} from '../constants/AppConstants';
+import {exampleCode, axiosDBG, DBG} from '../constants/AppConstants';
 import axios from 'axios';
 import Menu from 'semantic-ui-react/dist/commonjs/collections/Menu';
 
@@ -26,7 +26,7 @@ class CodeView extends React.Component {
     super(props);
     this.state = {
       server: {
-        url: 'http://localhost:5000/api',
+        url: `${DBG ? 'http://localhost:5000' : ''}/api`,
         status: false,
       },
       snippets: {},
@@ -58,7 +58,7 @@ class CodeView extends React.Component {
   }
 
   fetchCode(key = 'block/blk-core.c:1167') {
-    const {server, snippets:  _snippets} = this.state;
+    const {server, snippets: _snippets} = this.state;
     let snippets = {..._snippets};
 
     if (!snippets[key]) {
@@ -71,8 +71,8 @@ class CodeView extends React.Component {
         snippets[key] = res.data.result;
         this.setState({snippets}, this.toggle);
       }).catch(err => {
-        window.alert("Error. Please try later");
-        this.toggle();
+          window.alert('Error. Please try later');
+          this.toggle();
         },
       );
     }

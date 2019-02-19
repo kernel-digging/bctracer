@@ -19,7 +19,7 @@ const logger = winston.createLogger({
 export const Log = logger;
 
 export const axiosDBG = (obj) => {
-  Log.verbose(`Server Response: ${obj}`);
+  Log.verbose(`${obj.request.responseURL} Response: ${obj.status}`);
   obj.ok = (obj.status === 200);
   return obj;
 };
