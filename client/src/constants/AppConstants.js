@@ -31,9 +31,9 @@ export function debugDiff(object, base) {
   return changes(object, base);
 }
 
-export const COLORS = shuffle([
+const _COLORS = [
   'red', 'orange', 'yellow', 'olive', 'green', 'teal',
-  'blue', 'violet', 'purple', 'pink', 'brown', 'grey', 'black']);
+  'blue', 'violet', 'purple', 'pink', 'brown', 'grey', 'black'];
 
 // Delimits '|' and '\d)'
 // RexEx lookahead used. use only ES2018 supported browsers.

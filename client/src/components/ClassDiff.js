@@ -19,11 +19,8 @@ const DiffRow = ({k, v, pv}) => {
 class ClassDiff extends React.Component {
   render() {
     const {ts, data: {prev: _prev, curr: _curr}} = this.props;
-    let rows = [];
-    Object.entries(_curr).forEach(([k, v]) => {
-      const pv = _prev[k] ? _prev[k] : v;
-      rows.push(<DiffRow key={`${ts}_${k}`} {...{k, v, pv}} />);
-    });
+    const rows = Object.entries(_curr).map(([k, v]) =>
+      (<DiffRow key={`${ts}_${k}`} {...{k, v, pv: _prev ? _prev[k] : v}} />));
     return (<Table compact='very'><Body>{rows}</Body></Table>);
   }
 }
