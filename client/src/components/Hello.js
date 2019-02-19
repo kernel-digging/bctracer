@@ -2,6 +2,7 @@ import React, {Fragment} from 'react';
 import {Button, Dimmer, Loader, Divider, Grid, Header, Icon, Segment}
   from 'semantic-ui-react';
 import {Log} from '../constants/AppConstants';
+import {WithCtx} from './GraphCtl';
 
 class FileBtn extends React.Component {
   constructor(props) {
@@ -26,13 +27,13 @@ class FileBtn extends React.Component {
       const file = files[0];
 
       if (file.size <= 10 * 1024 * 1024) {
-        const {type, ctx, loading: toggle} = this.props;
+        const {type, ctx: {actions}, loading: toggle} = this.props;
         let action, fileReader = new FileReader();
 
         if (type.eq('Trace'))
-          action = ctx.parseTrace;
+          action = actions.parseTrace;
         else if (type.eq('Class'))
-          action = ctx.parseClass;
+          action = actions.parseClass;
 
         fileReader.onload = async ({res = true}) => {
           try {
@@ -134,7 +135,7 @@ class Hello extends React.Component {
         </Segment>
         {Trace &&
         <Button fluid animated color={color} inverted={Trace && Class}
-                onClick={ctx.toggleRender}>
+                onClick={ctx.actions.toggleRender}>
           <Button.Content visible content={msg}/>
           <Button.Content hidden>
             <Icon name='arrow right'/>
@@ -146,4 +147,4 @@ class Hello extends React.Component {
   }
 }
 
-export default Hello;
+export default WithCtx(Hello);

@@ -34,7 +34,7 @@ class App extends React.Component {
                   <div ref={r => this.ctxRef = r}>
                     <Header/>
                     <TopMenu stickyRef={this.ctxRef} />
-                    {ctx.update || ctx.init ?
+                    {ctx.update && ctx.init ?
                       <Graph traces={ctx.traces}/> : <Hello {...{ctx}}/>}
                   </div>
                 </Container>

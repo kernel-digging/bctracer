@@ -72,12 +72,6 @@ class GraphCtl extends React.Component {
     this.update({...filter, ...traces}, true);
   };
 
-  actions = {
-    doFilter: this.doFilter.bind(this),
-    onSelect: this.onSelect.bind(this),
-    toggleCodeView: this.toggleCodeView.bind(this),
-  };
-
   isVisible(key) {
     const {filter, hasData, traces: {[key]: trace}} = this.state;
 
@@ -166,6 +160,15 @@ class GraphCtl extends React.Component {
     this.update({traces, hasData}, render);
   }
 
+  actions = {
+    doFilter: this.doFilter.bind(this),
+    onSelect: this.onSelect.bind(this),
+    parseTrace: this.parseTrace.bind(this),
+    parseClass: this.parseClass.bind(this),
+    toggleRender: this.toggleRender.bind(this),
+    toggleCodeView: this.toggleCodeView.bind(this),
+  };
+
   componentDidUpdate() {
     this.toggleRender();
   }
@@ -174,12 +177,7 @@ class GraphCtl extends React.Component {
     const {state, actions} = this;
     return (
       <Provider value={{state, actions}}>
-        {this.props.children({
-          ...this.state,
-          parseTrace: this.parseTrace.bind(this),
-          parseClass: this.parseClass.bind(this),
-          toggleRender: this.toggleRender.bind(this),
-        })}
+        {this.props.children({...this.state})}
       </Provider>
     );
   }
