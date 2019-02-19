@@ -1,18 +1,27 @@
 import React from 'react';
-import {Popup, Label, Table} from 'semantic-ui-react';
+import {Popup, Table} from 'semantic-ui-react';
 import {isEmpty, isEqual} from 'lodash';
 import ClassDiff from './ClassDiff';
-import {COLORS, Log} from '../constants/AppConstants';
+import {Log} from '../constants/AppConstants';
 import {CtxConsumer} from './GraphCtl';
 
 const {Header, HeaderCell, Row, Body, Cell} = Table;
 
-const ArgLabel = ({idx}) => (
+const ArgHighlight = ({type_idx: i, idx}) => (
   <CtxConsumer>
-    {({state: {classTypes: type}}) =>
-      (<Label style={{'fontSize': '0.90rem', 'padding': '0.35rem 0.85rem'}}
-              size='small' color={COLORS[idx]} basic
-              content={type[idx].split(' ').slice(-2).join(' ')}/>)}
+    {({state: {classTypes: type}}) => {
+      const arg = type[i].split(' ').reverse();
+      const del = (idx) ? ', ' : '';
+      let args = [
+        (<span className='args'
+               style={{'color': 'deeppink'}}>{del}{arg.pop()} </span>),
+        (<span className='args'
+               style={{'color': 'purple'}}>{arg.pop()} </span>),
+      ];
+      arg.forEach(a => args.push(<span style={{'color': 'black'}}>{a}</span>));
+
+      return args;
+    }}
   </CtxConsumer>
 );
 
@@ -33,7 +42,9 @@ class GraphRow extends React.Component {
     let name = _name, label = [], end = null;
     if (!isEmpty(args)) {
       name = name.substr(0, name.indexOf('(') + 1) + ' ';
-      args.forEach(i => label.push(<ArgLabel key={`${ts}_arg${i}`} idx={i}/>));
+      args.forEach(
+        (type_idx, idx) => label.push(<ArgHighlight key={`${ts}_arg${type_idx}`}
+                                                    {...{type_idx, idx}}/>));
       end = ' ) {';
     }
     return [name, label, end];
@@ -55,7 +66,8 @@ class GraphRow extends React.Component {
         <Cell textAlign='center'>{cpu}</Cell>
         <Cell textAlign='center'>{delta}</Cell>
         <Cell>
-          {name.replace(/\s\s/g, 'ㅤ')}{label}{end}
+          {name.replace(/\s\s/g, 'ㅤ')}
+          {label}{end}
         </Cell>
       </Row>);
   }
