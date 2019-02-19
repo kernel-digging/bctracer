@@ -24,6 +24,7 @@ class GraphCtl extends React.Component {
     super(props);
     this.state = {
       traces: {},
+      shown: [],
       hasData: [],
       classTypes: [],
       filter: {
@@ -43,11 +44,12 @@ class GraphCtl extends React.Component {
   // Graph Render
   shouldComponentUpdate(nextProps, nextState) { return nextState.update; }
 
-  // Must keep callback ternary null.
-  update = (state, doRender = null) => this.setState(state,
-    (doRender ? this.toggleRender : null));
+  update = (state, doRender = null) => {
+    const render = (doRender ? {update: !this.state.update} : {});
+    this.setState({...state, ...render});
+  };
 
-  toggleRender = () => this.setState({update: !this.state.update});
+  toggleRender = () => this.update({}, true);
 
   toggleCodeView = () => this.update({codeView: !this.state.codeView}, true);
 
@@ -65,11 +67,16 @@ class GraphCtl extends React.Component {
   doFilter = (type) => (value) => () => {
     let traces = {...this.state.traces};
     let filter = {...this.state.filter};
+    let shown = [];
     filter[type][value] = !filter[type][value];
 
-    Object.keys(traces).forEach(k => traces[k].visible = this.isVisible(k));
-
-    this.update({...filter, ...traces}, true);
+    Object.keys(traces).forEach(k => {
+      const visible = this.isVisible(k);
+      traces[k].visible = visible;
+      if (visible)
+        shown.push(k);
+    });
+    this.update({...filter, ...traces, shown: shown}, true);
   };
 
   isVisible(key) {
@@ -117,7 +124,9 @@ class GraphCtl extends React.Component {
 
     Log.debug(classTypes);
     const filter = this.initFilter(cpus);
-    this.update({traces, filter, classTypes, init: true}, render);
+    this.update(
+      {traces, filter, classTypes, shown: Object.keys(traces), init: true},
+      render);
   }
 
   initFilter(cpus, cpu = {}) {

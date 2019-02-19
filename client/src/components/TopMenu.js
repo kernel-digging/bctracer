@@ -11,7 +11,6 @@ import {WithCtx} from './GraphCtl';
 
 const TopMenu = ({ctx, stickyRef}) => {
   const {state, actions} = ctx;
-
   return (
     <Sticky context={stickyRef}>
       <Menu className='small-mar-top' size='mini'>

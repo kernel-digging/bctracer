@@ -4,6 +4,7 @@ import Checkbox from 'semantic-ui-react/dist/commonjs/modules/Checkbox';
 import {TYPE_CPU, TYPE_MISC} from '../constants/AppConstants';
 import {WithCtx} from './GraphCtl';
 
+// CPU 0 will remain unchecked due to it's value: 0.
 const Filters = ({value, chk: defaultChecked, action}) =>
   <Checkbox {...{
     value,

@@ -70,7 +70,7 @@ class graphRow extends React.Component {
 
 const GraphRow = WithCtx(graphRow);
 
-const GraphTable = ({traces}) => (
+const GraphTable = ({traces, shown}) => (
   <Table unstackable selectable celled compact='very'>
     <Header>
       <Row>
@@ -82,7 +82,7 @@ const GraphTable = ({traces}) => (
     </Header>
 
     <Body>
-    {Object.keys(traces).map(k => <GraphRow key={k} {...traces[k]}/>)}
+    {shown.map(k => <GraphRow key={k} {...traces[k]}/>)}
     </Body>
   </Table>
 );
