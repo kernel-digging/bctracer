@@ -5,7 +5,7 @@ import winston from 'winston';
 export const DBG = true;
 
 const logger = winston.createLogger({
-  level: DBG ? 'debug' : 'info',
+  level: DBG ? 'verbose' : 'info',
   transports: [
     new winston.transports.Console({
       format: winston.format.combine(
@@ -19,7 +19,7 @@ const logger = winston.createLogger({
 export const Log = logger;
 
 export const axiosDBG = (obj) => {
-  Log.debug(`Server Response: ${obj}`);
+  Log.verbose(`Server Response: ${obj}`);
   obj.ok = (obj.status === 200);
   return obj;
 };
@@ -37,6 +37,7 @@ export function debugDiff(object, base) {
   return changes(object, base);
 }
 
+export const UNIT_OFFSET = 1000;
 const _COLORS = [
   'red', 'orange', 'yellow', 'olive', 'green', 'teal',
   'blue', 'violet', 'purple', 'pink', 'brown', 'grey', 'black'];

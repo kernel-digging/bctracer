@@ -1,8 +1,8 @@
 import React from 'react';
-import {Popup, Table} from 'semantic-ui-react';
+import {Popup, Table, Visibility} from 'semantic-ui-react';
 import {isEmpty, isEqual} from 'lodash';
 import ClassDiff from './ClassDiff';
-import {Log} from '../constants/AppConstants';
+import {Log, UNIT_OFFSET} from '../constants/AppConstants';
 import {WithCtx} from './GraphCtl';
 
 const {Header, HeaderCell, Row, Body, Cell} = Table;
@@ -49,8 +49,7 @@ class graphRow extends React.Component {
     const {ctx: {actions: {onSelect}}} = this.props;
     const hasData = !isEmpty(data);
     const [name, label, end] = this.funcName();
-    Log.debug(`GraphRow ${ts} render ${visible}`);
-    return (visible) && (
+    return (visible) && Log.debug(`GraphRow ${ts} render ${visible}`) && (
       <Row negative={hasData} {...{active}} onClick={onSelect(ts)}>
         <Popup trigger={<Cell textAlign='center'>{ts}</Cell>}
                position='left center' disabled={!hasData}>
@@ -70,21 +69,68 @@ class graphRow extends React.Component {
 
 const GraphRow = WithCtx(graphRow);
 
-const GraphTable = ({traces, shown}) => (
-  <Table unstackable selectable celled compact='very'>
-    <Header>
-      <Row>
-        <HeaderCell wide={3} textAlign='center'>Timestamp</HeaderCell>
-        <HeaderCell wide={1} textAlign='center'>CPU</HeaderCell>
-        <HeaderCell wide={2} textAlign='center'>Delta</HeaderCell>
-        <HeaderCell wide={10}>Functions</HeaderCell>
-      </Row>
-    </Header>
+class GraphTable extends React.Component {
+  state = {
+    calculations: {
+      direction: 'none',
+      height: 0,
+      width: 0,
+      topPassed: false,
+      bottomPassed: false,
+      pixelsPassed: 0,
+      percentagePassed: 0,
+      topVisible: false,
+      bottomVisible: false,
+      fits: false,
+      passing: false,
+      onScreen: false,
+      offScreen: false,
+    },
+  };
 
-    <Body>
-    {shown.map(k => <GraphRow key={k} {...traces[k]}/>)}
-    </Body>
-  </Table>
-);
+  handleUpdate = (e, {calculations}) => {
+    this.setState({calculations});
+  };
 
-export default GraphTable;
+  // TODO: apply debounce
+  componentDidUpdate() {
+    const {calculations: {bottomVisible}} = this.state;
+    const {ctx: {actions: {toggleRender, updateOffset}}} = this.props;
+    const {ctx: {state: {offset}}} = this.props;
+    if (bottomVisible) {
+      toggleRender();
+      updateOffset(offset + UNIT_OFFSET);
+    }
+  }
+
+  componentDidMount() {
+    const {ctx: {actions: {updateOffset}}} = this.props;
+    const {ctx: {state: {offset}}} = this.props;
+    updateOffset(offset + UNIT_OFFSET);
+  }
+
+  render() {
+    const {ctx: {state: {traces, shown, offset}}} = this.props;
+    const Shown = shown.slice(0, offset + UNIT_OFFSET);
+    return (
+      <Visibility onUpdate={this.handleUpdate}>
+        <Table unstackable selectable celled compact='very'>
+          <Header>
+            <Row>
+              <HeaderCell wide={3} textAlign='center'>Timestamp</HeaderCell>
+              <HeaderCell wide={1} textAlign='center'>CPU</HeaderCell>
+              <HeaderCell wide={2} textAlign='center'>Delta</HeaderCell>
+              <HeaderCell wide={10}>Functions</HeaderCell>
+            </Row>
+          </Header>
+
+          <Body>
+          {Shown.map(k => <GraphRow key={k} {...traces[k]}/>)}
+          </Body>
+        </Table>
+      </Visibility>
+    );
+  }
+}
+
+export default WithCtx(GraphTable);

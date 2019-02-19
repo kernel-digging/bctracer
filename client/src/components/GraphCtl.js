@@ -25,6 +25,7 @@ class GraphCtl extends React.Component {
     this.state = {
       traces: {},
       shown: [],
+      offset: 0, // index for rendered shown
       hasData: [],
       classTypes: [],
       filter: {
@@ -49,7 +50,18 @@ class GraphCtl extends React.Component {
     this.setState({...state, ...render});
   };
 
-  toggleRender = () => this.update({}, true);
+  updateOffset = (offset = 0) => {
+    const {traces} = this.state;
+    const maxOffset = Object.keys(traces).length;
+    (offset >= maxOffset) && (offset = maxOffset);
+    Log.verbose(`Updating offset to ${offset}`);
+    this.update({offset: offset});
+  };
+
+  toggleRender = () => {
+    Log.debug('Toggle Render Called');
+    this.update({}, true);
+  };
 
   toggleCodeView = () => this.update({codeView: !this.state.codeView}, true);
 
@@ -68,7 +80,7 @@ class GraphCtl extends React.Component {
     const len = selected.length;
     if (len > 1) {
       selected.sort((a, b) => a - b);
-      let {0 : a ,[len - 1] : b} = selected;
+      let {0: a, [len - 1]: b} = selected;
 
       const avail = Object.keys(traces).filter(k => (k > a) && (k < b));
       avail.forEach(k => traces[k].active = true);
@@ -103,6 +115,7 @@ class GraphCtl extends React.Component {
       if (visible)
         shown.push(k);
     });
+    this.updateOffset();
     this.update({filter, traces, shown: shown}, true);
   };
 
@@ -149,8 +162,9 @@ class GraphCtl extends React.Component {
       }
     });
 
-    Log.debug(classTypes);
+    Log.debug(`parsed classTypes ${classTypes}`);
     const filter = this.initFilter(cpus);
+    this.updateOffset();
     this.update(
       {traces, filter, classTypes, shown: Object.keys(traces), init: true},
       render);
@@ -201,6 +215,7 @@ class GraphCtl extends React.Component {
     onSelect: this.onSelect.bind(this),
     clearSelect: this.clearSelect.bind(this),
     betweenSelect: this.betweenSelect.bind(this),
+    updateOffset: this.updateOffset.bind(this),
     parseTrace: this.parseTrace.bind(this),
     parseClass: this.parseClass.bind(this),
     toggleRender: this.toggleRender.bind(this),
