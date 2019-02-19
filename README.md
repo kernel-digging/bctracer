@@ -1,14 +1,17 @@
+# BCTracer
 
+### Class Tracer featured by BPF
 
-# Start server
+-----
+
+##### To Start
 ```
+cd client
+npm install
+npm run build
 pip3 install -r requirements.txt
 python3: server.py 
 ```
 
-# Start client
-```
-cd client
-npm install
-npm start
-```
+And browse to `localhost:5000`
+
