@@ -61,6 +61,25 @@ class GraphCtl extends React.Component {
     this.update({traces, filter}, true);
   };
 
+  betweenSelect = () => {
+    let traces = {...this.state.traces};
+    let filter = {...this.state.filter};
+    const {selected} = filter;
+    const len = selected.length;
+    if (len > 1) {
+      selected.sort((a, b) => a - b);
+      let {0 : a ,[len - 1] : b} = selected;
+
+      const avail = Object.keys(traces).filter(k => (k > a) && (k < b));
+      avail.forEach(k => traces[k].active = true);
+      avail.unshift(selected[0]);
+      avail.push(selected[1]);
+
+      filter.selected = avail;
+      this.update({traces, filter}, true);
+    }
+  };
+
   onSelect = (key) => () => {
     let traces = {...this.state.traces};
     let filter = {...this.state.filter};
@@ -181,6 +200,7 @@ class GraphCtl extends React.Component {
     doFilter: this.doFilter.bind(this),
     onSelect: this.onSelect.bind(this),
     clearSelect: this.clearSelect.bind(this),
+    betweenSelect: this.betweenSelect.bind(this),
     parseTrace: this.parseTrace.bind(this),
     parseClass: this.parseClass.bind(this),
     toggleRender: this.toggleRender.bind(this),
