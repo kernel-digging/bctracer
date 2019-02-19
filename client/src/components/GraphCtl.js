@@ -37,7 +37,7 @@ class GraphCtl extends React.Component {
       },
       init: false,
       update: false,
-      codeView: false,
+      codeView: true,
     };
   }
 
@@ -53,6 +53,14 @@ class GraphCtl extends React.Component {
 
   toggleCodeView = () => this.update({codeView: !this.state.codeView}, true);
 
+  clearSelect = () => {
+    let traces = {...this.state.traces};
+    let filter = {...this.state.filter};
+    filter.selected.forEach(k => traces[k].active = false);
+    filter.selected = [];
+    this.update({traces, filter}, true);
+  };
+
   onSelect = (key) => () => {
     let traces = {...this.state.traces};
     let filter = {...this.state.filter};
@@ -60,7 +68,7 @@ class GraphCtl extends React.Component {
     (traces[key].active = !traces[key].active) ?
       filter.selected.push(key) : pull(filter.selected, key);
 
-    this.update({...traces, ...filter}, true);
+    this.update({traces, filter}, true);
   };
 
   // Manipulating GraphFilter
@@ -76,7 +84,7 @@ class GraphCtl extends React.Component {
       if (visible)
         shown.push(k);
     });
-    this.update({...filter, ...traces, shown: shown}, true);
+    this.update({filter, traces, shown: shown}, true);
   };
 
   isVisible(key) {
@@ -172,6 +180,7 @@ class GraphCtl extends React.Component {
   actions = {
     doFilter: this.doFilter.bind(this),
     onSelect: this.onSelect.bind(this),
+    clearSelect: this.clearSelect.bind(this),
     parseTrace: this.parseTrace.bind(this),
     parseClass: this.parseClass.bind(this),
     toggleRender: this.toggleRender.bind(this),

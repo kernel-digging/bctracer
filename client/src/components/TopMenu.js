@@ -27,6 +27,7 @@ const TopMenu = ({ctx, stickyRef}) => {
 
         {state.init &&
         <Menu.Menu position='right'>
+          <Menu.Item onClick={actions.clearSelect} content={'Clear Select'}/>
           <Menu.Item name='filter-misc'>
             <GraphFilter type={TYPE_MISC}/>
           </Menu.Item>
