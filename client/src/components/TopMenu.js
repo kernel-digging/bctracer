@@ -26,13 +26,11 @@ const TopMenu = ({ctx, stickyRef}) => {
         {ctx.init &&
         <Menu.Menu position='right'>
           <Menu.Item name='filter-misc'>
-            <GraphFilter type={TYPE_MISC} filter={ctx.filter.show}
-                         action={ctx.doFilter(TYPE_MISC)}/>
+            <GraphFilter type={TYPE_MISC}/>
           </Menu.Item>
 
           <Menu.Item name='filter-cpu'>
-            <GraphFilter type={TYPE_CPU} filter={ctx.filter.cpu}
-                         action={ctx.doFilter(TYPE_CPU)}/>
+            <GraphFilter type={TYPE_CPU}/>
           </Menu.Item>
 
           <Dropdown item icon='filter' simple>

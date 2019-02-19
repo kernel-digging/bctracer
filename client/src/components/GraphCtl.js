@@ -51,30 +51,31 @@ class GraphCtl extends React.Component {
 
   toggleCodeView = () => this.update({codeView: !this.state.codeView}, true);
 
-  onSelect(key) {
-    return () => {
-      let traces = {...this.state.traces};
-      let filter = {...this.state.filter};
+  onSelect = (key) => () => {
+    let traces = {...this.state.traces};
+    let filter = {...this.state.filter};
 
-      (traces[key].active = !traces[key].active) ?
-        filter.selected.push(key) : pull(filter.selected, key);
+    (traces[key].active = !traces[key].active) ?
+      filter.selected.push(key) : pull(filter.selected, key);
 
-      this.update({...traces, ...filter}, true);
-    };
-  }
+    this.update({...traces, ...filter}, true);
+  };
 
   // Manipulating GraphFilter
-  doFilter(type) {
-    return (value) => () => {
-      let traces = {...this.state.traces};
-      let filter = {...this.state.filter};
-      filter[type][value] = !filter[type][value];
+  doFilter = (type) => (value) => () => {
+    let traces = {...this.state.traces};
+    let filter = {...this.state.filter};
+    filter[type][value] = !filter[type][value];
 
-      Object.keys(traces).forEach(k => traces[k].visible = this.isVisible(k));
+    Object.keys(traces).forEach(k => traces[k].visible = this.isVisible(k));
 
-      this.update({...filter, ...traces}, true);
-    };
-  }
+    this.update({...filter, ...traces}, true);
+  };
+
+  actions = {
+    doFilter: this.doFilter.bind(this),
+    onSelect: this.onSelect.bind(this),
+  };
 
   isVisible(key) {
     const {filter, hasData, traces: {[key]: trace}} = this.state;
@@ -171,12 +172,11 @@ class GraphCtl extends React.Component {
   }
 
   render() {
+    const {state, actions} = this;
     return (
-      <Provider value={{state:this.state}}>
+      <Provider value={{state, actions}}>
         {this.props.children({
           ...this.state,
-          onSelect: this.onSelect.bind(this),
-          doFilter: this.doFilter.bind(this),
           parseTrace: this.parseTrace.bind(this),
           parseClass: this.parseClass.bind(this),
           toggleRender: this.toggleRender.bind(this),
@@ -187,5 +187,12 @@ class GraphCtl extends React.Component {
   }
 }
 
+export const WithCtx = (Component) => {
+  return (props) => (
+    <CtxConsumer>
+      {ctx => <Component {...props} {...{ctx}}/>}
+    </CtxConsumer>
+  );
+};
+
 export default GraphCtl;
-export {CtxConsumer};

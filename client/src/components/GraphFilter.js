@@ -2,6 +2,7 @@ import React from 'react';
 import {Segment} from 'semantic-ui-react';
 import Checkbox from 'semantic-ui-react/dist/commonjs/modules/Checkbox';
 import {TYPE_CPU, TYPE_MISC} from '../constants/AppConstants';
+import {WithCtx} from './GraphCtl';
 
 const Filters = ({value, chk: defaultChecked, action}) =>
   <Checkbox {...{
@@ -11,15 +12,17 @@ const Filters = ({value, chk: defaultChecked, action}) =>
     label: `${value}ㅤ`,
   }}/>;
 
-const GraphFilter = ({type, filter, action}) => {
+const GraphFilter = ({type, ctx: {state, actions}}) => {
+  const [filter, action] = [state.filter[type], actions.doFilter(type)];
   let filters = [];
   Object.entries(filter).forEach(
     ([k, v]) => filters.push(<Filters key={`filter-${k}`} value={k}
-                                     chk={v} {...{action}}/>));
+                                      chk={v} {...{action}}/>));
 
-  let header =
-    type.eq(TYPE_CPU) ? 'Filter CPU >ㅤ' :
-      type.eq(TYPE_MISC) ? 'Show Only >ㅤ' : '';
+  const header = {
+    [TYPE_CPU]: 'Filter CPU >ㅤ',
+    [TYPE_MISC]: 'Show Only >ㅤ',
+  }[type];
 
   return (
     <Segment className="no-mar no-pad" compact basic floated='right'>
@@ -29,4 +32,4 @@ const GraphFilter = ({type, filter, action}) => {
   );
 };
 
-export default GraphFilter;
+export default WithCtx(GraphFilter);

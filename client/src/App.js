@@ -34,8 +34,7 @@ class App extends React.Component {
                     <Header/>
                     <TopMenu {...{ctx, stickyRef: this.ctxRef}} />
                     {ctx.update || ctx.init ?
-                      <Graph traces={ctx.traces} action={ctx.onSelect}/>
-                      : <Hello {...{ctx}}/>}
+                      <Graph traces={ctx.traces}/> : <Hello {...{ctx}}/>}
                   </div>
                 </Container>
               </Container>
