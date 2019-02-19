@@ -1,5 +1,5 @@
 import React, {Fragment} from 'react';
-import {Button, Dimmer, Loader, Divider, Grid, Header, Icon, Segment}
+import {Button, Dimmer, Step, Loader, Divider, Grid, Header, Icon, Segment}
   from 'semantic-ui-react';
 import {Log} from '../constants/AppConstants';
 import {WithCtx} from './GraphCtl';
@@ -129,6 +129,29 @@ class Hello extends React.Component {
                 </Header>
                 <FileBtn type='Class' active={Class}
                          loading={this.toggle} {...{ctx}}/>
+
+                {Class &&
+                <Step.Group vertical size='mini' style={{'position': 'absolute',
+                              'transform': 'translate(-50%, 0%)'}}>
+                  <Step completed>
+                    <Icon name='payment'/>
+                    <Step.Content>
+                      <Step.Title>Data Parse</Step.Title>
+                      <Step.Description>Class data for trace
+                        log</Step.Description>
+                    </Step.Content>
+                  </Step>
+
+                  <Step completed>
+                    <Icon name='payment'/>
+                    <Step.Content>
+                      <Step.Title>Debug SrcLine</Step.Title>
+                      <Step.Description>Source line for
+                        CodeView</Step.Description>
+                    </Step.Content>
+                  </Step>
+                </Step.Group>
+                }
               </Grid.Column>
             </Grid.Row>
           </Grid>
