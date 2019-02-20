@@ -39,7 +39,9 @@ export function debugDiff(object, base) {
 
 export const UNIT_OFFSET = 1000;
 
-export const exampleCode = `
+export const exampleCode = `No Code Found
+printing CodeView placeholder
+/////////////////////////////
     onSubmit(e) {
       e.preventDefault();
       const job = {
@@ -54,7 +56,7 @@ export const exampleCode = `
         company: 'Facebook'
         };
       }
-  `;
+/////////////////////////////`;
 
 // Delimits '|' and '\d)'
 // RexEx lookahead used. use only ES2018 supported browsers.

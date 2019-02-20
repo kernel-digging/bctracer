@@ -66,7 +66,7 @@ class CodeView extends React.Component {
 
       let snippets = {..._snippets};
 
-      if (!snippets[key]) {
+      if (key && !snippets[key]) {
         this.toggle();
         const location = key.split(':');
         axios.post(server.url + '/code', {
@@ -106,7 +106,7 @@ class CodeView extends React.Component {
 
     const code = snippets[key]
       ? snippets[key]
-      : exampleCode;
+      : null;
     return (
       <Sidebar as={Segment} animation='overlay' direction='right'
                className='code-view' width='very wide' visible={visible}>
@@ -162,7 +162,7 @@ class CodeView extends React.Component {
                 <Header className='no-mar-top' as='h3'>
                   <Icon name='search'/>Code Viewer
                 </Header>
-                {(server.status && selected.length === 1) ?
+                {(server.status && selected.length === 1 && code) ?
                   (<CodeBlock code={code} offset={key && key.split(':')[1]}
                               line={'2, 4-9'}/>)
                   :

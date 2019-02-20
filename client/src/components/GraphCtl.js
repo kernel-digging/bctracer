@@ -38,7 +38,7 @@ class GraphCtl extends React.Component {
       },
       init: false,
       update: false,
-      codeView: true,
+      codeView: false,
       srcLine: {}
     };
   }
@@ -180,8 +180,10 @@ class GraphCtl extends React.Component {
   }
 
   parseClass({srcline, data}) {
-    this.parseSrcLine(srcline);
-    this.parseClassData(data);
+    if (srcline)
+      this.parseSrcLine(srcline);
+    if (data)
+      this.parseClassData(data);
   }
 
   parseSrcLine(srcline) {

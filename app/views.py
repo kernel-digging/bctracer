@@ -23,7 +23,7 @@ def code():
     req = request.get_json()
 
     # AWK programmed
-    command = '''R() { L=$1; P=$2; F=$3; E=$(awk -v line=$L -v i=1 '/^}/{if(NR>line && i){print NR; i--; } }' $P/$F); awk "NR>=$L && NR<=$E+1" $P/$F; } ; R %s %s %s''' % (req['line'],  "/home/kosslab/git/linux", req['file'])
+    command = '''R() { L=$1; P=$2; F=$3; E=$(awk -v line=$L -v i=1 '/^}/{if(NR>line && i){print NR; i--; } }' $P/$F); awk "NR>=$L-4 && NR<=$E+1" $P/$F; } ; R %s %s %s''' % (req['line'],  "/home/kosslab/git/linux", req['file'])
     print(command)
 
     p = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
