@@ -37,7 +37,12 @@ class FileBtn extends React.Component {
 
         fileReader.onload = async ({res = true}) => {
           try {
-            await action(fileReader.result, false);
+            let res = fileReader.result;
+            if (type.eq('Class')) {
+              if ('string'.eq(typeof res))
+                res = JSON.parse(res)['data'];
+            }
+            await action(res, false);
           } catch (e) {
             res = false;
             if (e instanceof SyntaxError)
@@ -131,8 +136,10 @@ class Hello extends React.Component {
                          loading={this.toggle} {...{ctx}}/>
 
                 {Class &&
-                <Step.Group vertical size='mini' style={{'position': 'absolute',
-                              'transform': 'translate(-50%, 0%)'}}>
+                <Step.Group vertical size='mini' style={{
+                  'position': 'absolute',
+                  'transform': 'translate(-50%, 0%)',
+                }}>
                   <Step completed>
                     <Icon name='payment'/>
                     <Step.Content>
