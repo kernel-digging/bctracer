@@ -2,7 +2,7 @@ import {isEqual, transform, isObject} from 'lodash';
 import winston from 'winston';
 
 // const DBG = null;
-export const DBG = true;
+export const DBG = false;
 
 const logger = winston.createLogger({
   level: DBG ? 'verbose' : 'info',
