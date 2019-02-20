@@ -57,24 +57,31 @@ class CodeView extends React.Component {
     );
   }
 
-  fetchCode(key = 'block/blk-core.c:1167') {
+  fetchCode() {
     const {server, snippets: _snippets} = this.state;
-    let snippets = {..._snippets};
+    const {selected, traces, srcLine} = this.props;
+    if (selected.length === 1) {
+      const name = traces[selected[0]].name.trim();
+      const key = srcLine[name.substr(0, name.indexOf('('))];
 
-    if (!snippets[key]) {
-      this.toggle();
-      const location = key.split(':');
-      axios.post(server.url + '/code', {
-        'line': parseInt(location[1], 10),
-        'file': location[0],
-      }).then(res => {
-        snippets[key] = res.data.result;
-        this.setState({snippets}, this.toggle);
-      }).catch(err => {
-          window.alert('Error. Please try later');
-          this.toggle();
-        },
-      );
+      let snippets = {..._snippets};
+
+      if (!snippets[key]) {
+        this.toggle();
+        const location = key.split(':');
+        axios.post(server.url + '/code', {
+          'line': parseInt(location[1], 10) - 1, // TODO: temporary. Error on format
+          'file': location[0],
+        }).then(res => {
+          snippets[key] = res.data.result;
+          this.setState({snippets}, this.toggle);
+        }).catch(err => {
+            window.alert('Error. Please try later', err);
+            this.toggle();
+          },
+        );
+      }
+
     }
   }
 
@@ -88,11 +95,17 @@ class CodeView extends React.Component {
   }
 
   render() {
-    const {visible, selected} = this.props;
+    const {visible, selected, traces, srcLine} = this.props;
     const {loading, server, snippets} = this.state;
 
-    const code = snippets['block/blk-core.c:1167']
-      ? snippets['block/blk-core.c:1167']
+    let key;
+    if (selected.length === 1) {
+      const name = traces[selected[0]].name.trim();
+      key = srcLine[name.substr(0, name.indexOf('('))];
+    }
+
+    const code = snippets[key]
+      ? snippets[key]
       : exampleCode;
     return (
       <Sidebar as={Segment} animation='overlay' direction='right'
@@ -150,7 +163,8 @@ class CodeView extends React.Component {
                   <Icon name='search'/>Code Viewer
                 </Header>
                 {(server.status && selected.length === 1) ?
-                  (<CodeBlock code={code} offset='1167' line={'2, 4-9'}/>)
+                  (<CodeBlock code={code} offset={key && key.split(':')[1]}
+                              line={'2, 4-9'}/>)
                   :
                   <Message floating icon warning>
                     <Icon name='exclamation triangle'/>

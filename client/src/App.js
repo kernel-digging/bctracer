@@ -25,7 +25,10 @@ class App extends React.Component {
       <GraphCtl>
         {ctx => (
           <Sidebar.Pushable as={Segment}>
+            {/*TODO: Switch to context API*/}
             {ctx.codeView && <CodeView visible={ctx.codeView}
+                                       srcLine={ctx.srcLine}
+                                       traces={ctx.traces}
                                        selected={ctx.filter.selected}/>}
 
             <Sidebar.Pusher>
