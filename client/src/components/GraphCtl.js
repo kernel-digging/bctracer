@@ -39,6 +39,7 @@ class GraphCtl extends React.Component {
       init: false,
       update: false,
       codeView: true,
+      srcLine: {}
     };
   }
 
@@ -162,7 +163,8 @@ class GraphCtl extends React.Component {
       }
     });
 
-    Log.debug(`parsed classTypes ${classTypes}`);
+    Log.verbose(`${Object.keys(traces).length} trace log parsed`);
+    Log.verbose(`${classTypes.length} classTypes parsed.`);
     const filter = this.initFilter(cpus);
     this.updateOffset();
     this.update(
@@ -177,13 +179,20 @@ class GraphCtl extends React.Component {
     return filter;
   }
 
-  parseClass(data, render = true) {
+  parseClass({srcline, data}) {
+    this.parseSrcLine(srcline);
+    this.parseClassData(data);
+  }
+
+  parseSrcLine(srcline) {
+    Log.verbose(`${Object.keys(srcline).length} function SrcLine parsed`);
+    this.update({srcLine:srcline})
+  }
+
+  parseClassData(data, render = true) {
     const {traces: _traces} = this.state;
     let traces = {..._traces};
     let hasData = [];
-
-    if ('string'.eq(typeof data))
-      data = JSON.parse(data);
 
     const trace_ts = Object.keys(_traces);
     const max_ts = last(trace_ts);
@@ -197,7 +206,8 @@ class GraphCtl extends React.Component {
 
       const avail_ts = trace_ts.filter(_t =>
         inRange(_t, ts, next_ts) &&
-        trim(_traces[_t].name).startsWith(`${name}()`),
+        // Only matches with opening parentheses
+        trim(_traces[_t].name).startsWith(`${name}(`),
       );
 
       // TODO: Check only one exists
@@ -207,6 +217,7 @@ class GraphCtl extends React.Component {
       }
     });
 
+    Log.verbose(`${hasData.length} class Data parsed`);
     this.update({traces, hasData}, render);
   }
 
@@ -218,6 +229,7 @@ class GraphCtl extends React.Component {
     updateOffset: this.updateOffset.bind(this),
     parseTrace: this.parseTrace.bind(this),
     parseClass: this.parseClass.bind(this),
+    parseClassData: this.parseClassData.bind(this),
     toggleRender: this.toggleRender.bind(this),
     toggleCodeView: this.toggleCodeView.bind(this),
   };

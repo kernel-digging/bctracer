@@ -40,7 +40,7 @@ class FileBtn extends React.Component {
             let res = fileReader.result;
             if (type.eq('Class')) {
               if ('string'.eq(typeof res))
-                res = JSON.parse(res)['data'];
+                res = JSON.parse(res);
             }
             await action(res, false);
           } catch (e) {

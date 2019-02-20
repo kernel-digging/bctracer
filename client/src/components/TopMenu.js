@@ -19,7 +19,7 @@ const TopMenu = ({ctx, stickyRef}) => {
           <Menu.Item name='class' content={'Load Trace'}
                      onClick={() => actions.parseTrace(TRACE_LOG)}/>
           <Menu.Item name='class' content={'Load Class'}
-                     onClick={() => actions.parseClass(CLASS_LOG)}/>
+                     onClick={() => actions.parseClassData(CLASS_LOG)}/>
           <Menu.Item name='codeView' content={'Code View'}
                      onClick={actions.toggleCodeView}/>
         </Fragment>
